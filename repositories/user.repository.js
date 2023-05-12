@@ -12,7 +12,6 @@ class UserRepository {
     return await this.usersModel.findOne({ where: { nickname } });
   };
 
-
   // 회원가입
   signup = async (email, nickname, password, location_id) => {
     return await this.usersModel.create({
@@ -21,6 +20,19 @@ class UserRepository {
       password,
       location_id,
     });
+  };
+
+  // 회원정보 조회
+  getProfile = async (user_id) => {
+    return await this.usersModel.findOne({
+      attributes: ['user_id', 'nickname', 'email', 'location_id', 'user_image'],
+      where: { user_id },
+    });
+  };
+
+  // 회원탈퇴
+  withdrawal = async (user_id) => {
+    await this.usersModel.destroy({ where: { user_id } });
   };
 }
 
