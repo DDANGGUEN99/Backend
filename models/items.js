@@ -1,5 +1,5 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Items extends Model {
     /**
@@ -10,13 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Users, {
-        targetKey: "user_id",
-        foreignKey: "user_id",
+        targetKey: 'user_id',
+        foreignKey: 'user_id',
       });
 
       this.hasMany(models.Likes, {
-        sourceKey: "item_id",
-        foreignKey: "item_id",
+        sourceKey: 'item_id',
+        foreignKey: 'item_id',
       });
     }
   }
@@ -32,10 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {
-          model: "Users", // Users 모델을 참조합니다.
-          key: "user_id", // Users 모델의 userId를 참조합니다.
+          model: 'Users', // Users 모델을 참조합니다.
+          key: 'user_id', // Users 모델의 userId를 참조합니다.
         },
-        onDelete: "CASCADE",
+        onDelete: 'CASCADE',
       },
       nickname: {
         allowNull: false,
@@ -83,8 +83,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Items",
-    }
+      modelName: 'Items',
+    },
   );
   return Items;
 };

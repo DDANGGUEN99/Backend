@@ -7,63 +7,63 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       user_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Users", // Users 모델을 참조합니다.
-          key: "user_id", // Users 모델의 userId를 참조합니다.
+          model: 'Users', // Users 모델을 참조합니다.
+          key: 'user_id', // Users 모델의 userId를 참조합니다.
         },
-        onDelete: "CASCADE",
+        onDelete: 'CASCADE',
       },
       nickname: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       category_id: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       title: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       price: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       content: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       location_id: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       status: {
         allowNull: false,
-        type: Sequelize.CHAR(1)
+        type: Sequelize.CHAR(1),
       },
       likes: {
         allowNull: false,
         defaultValue: 0,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
-        defaultValue: Sequelize.fn("now"),
-        type: Sequelize.DATE
+        defaultValue: Sequelize.fn('now'),
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        defaultValue: Sequelize.fn("now"),
-        type: Sequelize.DATE
-      }
+        defaultValue: Sequelize.fn('now'),
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Items');
-  }
+  },
 };
