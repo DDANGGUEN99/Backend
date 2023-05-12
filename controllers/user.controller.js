@@ -42,13 +42,13 @@ class UserController {
     const { email, nickname, password, location_id } = req.body;
 
     // input data 유효성 검사
-    // if (!email || !nickname || !password || !location_id) {
-    //   res.status(412).json({ errorMessage: '데이터 형식 비정상' });
-    // }
+    if (!email || !nickname || !password || !location_id) {
+      return res.status(412).json({ errorMessage: '데이터 형식 비정상' });
+    }
 
     // 패스워드에 닉네임 포함여부 검사
     if (password.includes(nickname)) {
-      res.status(412).json({ errorMessage: '패스워드에 닉네임 포함' });
+      return res.status(412).json({ errorMessage: '패스워드에 닉네임 포함' });
     }
 
     // 회원등록
@@ -59,12 +59,62 @@ class UserController {
       location_id,
     );
 
-    // 결과 피드백
+    // 회원등록 결과
     if (!result) {
       return res.status(412).json({ errorMessage: '회원가입 실패' });
     } else {
       return res.status(200).end();
     }
+  };
+
+  // 로그인
+  login = async (req, res) => {
+    const { email, password } = req.body;
+
+    // email 유효성 검사
+    if (!email)
+      return res.status(400).json({ errorMessage: '데이터 형식 비정상' });
+
+    // password 유효성 검사
+    if (!password)
+      return res.status(400).json({ errorMessage: '데이터 형식 비정상' });
+
+    // Users 검색 (with Email)
+    const user = await this.userService.getUserWithEmail(email);
+
+    // Users 검색 결과에 따른 응답
+    if (!user || user.password !== password) {
+      return res
+        .status(412)
+        .json({ errorMessage: '유저가 없거나 비밀번호 틀림' });
+    }
+
+    const [accesstoken, refreshtoken] = await this.userService.login(user);
+
+    const userData = {
+      user_id: user.user_id,
+      nickname: user.nickname,
+      user_image: user.user_image,
+    };
+
+    res.cookie('accesstoken', `Bearer ${accesstoken}`);
+    res.cookie('refreshtoken', `Bearer ${refreshtoken}`);
+
+    return res.status(200).json({ accesstoken, refreshtoken, userData });
+  };
+
+  // 회원정보 조회
+  getProfile = async (req, res, next) => {
+    const { user_id } = res.locals.user;
+    const profileData = await this.userService.getProfile(user_id);
+    return res.status(200).json({ userData: profileData });
+  };
+
+  // 회원 탈퇴
+  withdrawal = async (req, res, next) => {
+    const { user_id } = res.locals.user;
+    await this.userService.withdrawal(user_id);
+    return res.status(200).end();
   };
 }
 
