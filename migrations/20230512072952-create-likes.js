@@ -7,29 +7,29 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       item_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Items",
-          key: "item_id",
+          model: 'Items',
+          key: 'item_id',
         },
-        onDelete: "CASCADE",
+        onDelete: 'CASCADE',
       },
       user_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Users",
-          key: "user_id",
+          model: 'Users',
+          key: 'user_id',
         },
-        onDelete: "CASCADE",
+        onDelete: 'CASCADE',
       },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Likes');
-  }
+  },
 };

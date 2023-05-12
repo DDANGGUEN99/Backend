@@ -1,6 +1,6 @@
-const { Op } = require("sequelize");
-const { Item } = require("../models");
-const { Sequelize } = require("sequelize");
+const { Op } = require('sequelize');
+const { Item } = require('../models');
+const { Sequelize } = require('sequelize');
 
 class ItemRepository {
   constructor(itemsModel) {

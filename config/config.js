@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 const env = process.env;
 
 const config = {
@@ -7,21 +7,21 @@ const config = {
     password: `${env.DB_PASSWORD}`,
     database: `${env.DB_NAME}`,
     host: `${env.DB_HOST}`,
-    dialect: "mysql",
+    dialect: 'mysql',
   },
   test: {
-    username: "root",
+    username: 'root',
     password: null,
-    database: "database_test",
-    host: "127.0.0.1",
-    dialect: "mysql",
+    database: 'database_test',
+    host: '127.0.0.1',
+    dialect: 'mysql',
   },
   production: {
-    username: "root",
+    username: 'root',
     password: null,
-    database: "database_production",
-    host: "127.0.0.1",
-    dialect: "mysql",
+    database: 'database_production',
+    host: '127.0.0.1',
+    dialect: 'mysql',
   },
 };
 
