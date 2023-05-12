@@ -13,8 +13,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users', // Users 모델을 참조합니다.
-          key: 'user_id', // Users 모델의 userId를 참조합니다.
+          model: 'Users',
+          key: 'user_id',
         },
         onDelete: 'CASCADE',
       },
@@ -30,13 +30,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      price: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-      },
       content: {
         allowNull: false,
         type: Sequelize.STRING,
+      },
+      price: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
       },
       location_id: {
         allowNull: false,
@@ -53,13 +53,13 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
       },
       updatedAt: {
         allowNull: false,
-        defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
       },
     });
   },

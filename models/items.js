@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Users, {
         targetKey: 'user_id',
         foreignKey: 'user_id',
+        onDelete: 'CASCADE',
       });
 
       this.hasMany(models.Likes, {
@@ -32,8 +33,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.INTEGER,
         references: {
-          model: 'Users', // Users 모델을 참조합니다.
-          key: 'user_id', // Users 모델의 userId를 참조합니다.
+          model: 'Users',
+          key: 'user_id',
         },
         onDelete: 'CASCADE',
       },
@@ -49,13 +50,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      price: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-      },
       content: {
         allowNull: true,
         type: DataTypes.TEXT,
+      },
+      price: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
       },
       location_id: {
         allowNull: false,
@@ -72,13 +73,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       createdAt: {
         allowNull: false,
-        defaultValue: DataTypes.NOW,
         type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
       },
       updatedAt: {
         allowNull: false,
-        defaultValue: DataTypes.NOW,
         type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
       },
     },
     {

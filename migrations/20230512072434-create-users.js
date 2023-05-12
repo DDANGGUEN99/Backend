@@ -12,10 +12,12 @@ module.exports = {
       nickname: {
         allowNull: false,
         type: Sequelize.STRING,
+        unique: true,
       },
       email: {
         allowNull: false,
         type: Sequelize.STRING,
+        unique: true,
       },
       password: {
         allowNull: false,
@@ -25,15 +27,19 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
+      user_image: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
-        defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
       },
       updatedAt: {
         allowNull: false,
-        defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
       },
     });
   },
