@@ -39,7 +39,7 @@ class UserController {
 
   // 회원 가입
   signup = async (req, res) => {
-    const { email, nickname, password, location_id } = req.body;
+    const { email, nickname, password, location_id, user_image } = req.body;
 
     // input data 유효성 검사
     if (!email || !nickname || !password || !location_id) {
@@ -57,6 +57,7 @@ class UserController {
       email,
       password,
       location_id,
+      user_image,
     );
 
     // 회원등록 결과
@@ -103,6 +104,18 @@ class UserController {
     return res.status(200).json({ accesstoken, refreshtoken, userData });
   };
 
+  // 로그인 검증 - 테스트용
+  authMiddlewareTest = async (req, res, next) => {
+    try {
+      return res.status(200).send(res.locals.user);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 로그아웃
+  // logout = async (req, res) => {};
+
   // 회원정보 조회
   getProfile = async (req, res, next) => {
     const { user_id } = res.locals.user;
@@ -119,17 +132,17 @@ class UserController {
   // 회원정보 수정
   editProfile = async (req, res, next) => {
     const { user_id } = res.locals.user;
-    const { email, nickname, password, location_id } = req.body;
+    const { email, nickname, password, location_id, user_image } = req.body;
 
     // input data 유효성 검사
-    if (!email || !nickname || !password || !location_id) {
-      return res.status(412).json({ errorMessage: '데이터 형식 비정상' });
-    }
+    // if (!email || !nickname || !password || !location_id) {
+    //   return res.status(412).json({ errorMessage: '데이터 형식 비정상' });
+    // }
 
     // 패스워드에 닉네임 포함여부 검사
-    if (password.includes(nickname)) {
-      return res.status(412).json({ errorMessage: '패스워드에 닉네임 포함' });
-    }
+    // if (password.includes(nickname)) {
+    //   return res.status(412).json({ errorMessage: '패스워드에 닉네임 포함' });
+    // }
 
     // 회원정보 수정 처리
     const profileData = await this.userService.editProfile(
@@ -138,6 +151,7 @@ class UserController {
       email,
       password,
       location_id,
+      user_image,
     );
 
     // 회원정보 수정 결과

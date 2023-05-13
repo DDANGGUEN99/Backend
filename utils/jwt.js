@@ -7,10 +7,14 @@ const REFRESH_TOKEN_EXPIRE_TIME = process.env.REFRESH_TOKEN_EXPIRE_TIME; // env�
 
 module.exports = {
   // Access Token 발급
-  createAccessToken: (user_id, nickname) => {
-    return jwt.sign({ user_id, nickname }, SECRET_KEY, {
-      expiresIn: ACCESS_TOKEN_EXPIRE_TIME,
-    });
+  createAccessToken: (user_id, nickname, location_id, user_image) => {
+    return jwt.sign(
+      { user_id, nickname, location_id, user_image },
+      SECRET_KEY,
+      {
+        expiresIn: ACCESS_TOKEN_EXPIRE_TIME,
+      },
+    );
   },
   // Refresh Token 발급
   createRefreshToken: () => {
