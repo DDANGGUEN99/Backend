@@ -26,12 +26,11 @@ router.post('/upload', upload.single('postImgUrl'), function(req, res) {
 // POST : 연습용 판매글 작성
 router.post('/post', authMiddleware, itemController.postItem);
 
+// GET: 게시글 전체 조회
+router.get('/', authMiddleware, itemController.getItems);
 
-// GET: 판매글 전체 조회
-router.get('/', itemController.getItems);
-
-// GET: 판매글 상세 조회
-router.get('/:item_id', itemController.getItem);
+// GET: 월드컵 상세 조회
+router.get('/:item_id', authMiddleware, itemController.getItem);
 
 // DELETE: 판매글 삭제
 router.delete(

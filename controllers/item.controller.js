@@ -18,8 +18,8 @@ class ItemController {
 
   getItems = async (req, res, next) => {
     try {
-      const { page, location_id } = req.body;
-      const { user_id } = res.locals.user;
+      const { page } = req.body;
+      const { user_id, location_id } = res.locals.user;
       const findInfo = { page, location_id, user_id };
       const items = await this.itemService.getItems(findInfo);
       res.status(200).json({ items });
