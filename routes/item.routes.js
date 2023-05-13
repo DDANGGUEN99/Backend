@@ -23,13 +23,13 @@ router.post('/upload', upload.single('postImgUrl'), function(req, res) {
 });
 
 
-// GET: 게시글 전체 조회
+// GET: 판매글 전체 조회
 router.get('/', itemController.getItems);
 
-// GET: 월드컵 상세 조회
+// GET: 판매글 상세 조회
 router.get('/:item_id', itemController.getItem);
 
-// DELETE: 월드컵 삭제
+// DELETE: 판매글 삭제
 router.delete(
   '/:item_id',
   authMiddleware,
