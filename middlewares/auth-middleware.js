@@ -49,8 +49,8 @@ module.exports = async (req, res, next) => {
         try {
           const data = await redisClientRepository.getData(refreshTokenValue);
           if (data) {
-            const { userId, nickname } = JSON.parse(data);
-            if (userId.length < 0 && !nickname.length < 0) {
+            const { user_id, nickname } = JSON.parse(data);
+            if (user_id.length < 0 && !nickname.length < 0) {
               // return Promise.reject({
               //   errorMessage:
               //     "Refresh Token의 정보가 서버에 존재하지 않습니다.",
@@ -59,7 +59,7 @@ module.exports = async (req, res, next) => {
                 errorMessage: 'Refresh 서버에 없음, 재로그인 필요',
               });
             } else {
-              return Promise.resolve({ userId, nickname });
+              return Promise.resolve({ user_id, nickname });
             }
           } else {
             return res.status(419).json({
@@ -73,10 +73,10 @@ module.exports = async (req, res, next) => {
         }
       }
 
-      const { userId, nickname } = await getData(refreshTokenValue);
+      const { user_id, nickname } = await getData(refreshTokenValue);
 
       // Access Token 새발급
-      const newAccessToken = jwt.createAccessToken(userId, nickname);
+      const newAccessToken = jwt.createAccessToken(user_id, nickname);
 
       res.locals.user = jwt.getAccessTokenPayload(newAccessToken);
       res.cookie('accessToken', `Bearer ${newAccessToken}`);

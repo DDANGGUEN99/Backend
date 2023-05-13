@@ -19,18 +19,9 @@ router.post('/signup', userController.signup);
 router.post('/login', userController.login);
 
 // // 로그인 테스트
-// router.post('/login/test', authMiddleware, userController.authMiddlewareTest);
+router.post('/login/test', authMiddleware, userController.authMiddlewareTest);
 
 // // 로그아웃
 // router.post('/logout', authMiddleware, userController.logout);
-
-// // 회원정보 조회
-router.get('/mypage', authMiddleware, userController.getProfile);
-
-// // 회원정보 수정
-// router.put('/mypage', authMiddleware, userController.editProfile);
-
-// // 회원탈퇴
-router.delete('/withdrawal', authMiddleware, userController.withdrawal);
 
 module.exports = router;

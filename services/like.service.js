@@ -1,5 +1,4 @@
-const LikeRepository = require('../repositories/likes.repository');
-const PostRepository = require('../repositories/posts.repository');
+const LikeRepository = require('../repositories/like.repository');
 const AppError = require('../utils/appError');
 
 class PostService {

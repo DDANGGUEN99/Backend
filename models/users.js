@@ -45,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      user_image: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         defaultValue: DataTypes.NOW,

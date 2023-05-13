@@ -7,6 +7,15 @@ class ItemRepository {
     this.itemsModel = itemsModel;
   }
 
+  // 거래글 생성 : post는 객체
+  createItem2 = async (post) => {
+    console.log(`nickname: ${post.nickname}`);
+
+    const createPost = await itemsModel.create({...post});
+
+    return createPost;
+  };
+
   // status 관련 코드도 추가해야 됨
   findAll = async (findInfo) => {
     const { page, location_id, user_id } = findInfo;
@@ -50,30 +59,24 @@ class ItemRepository {
       return true;
     }
   };
-}
 
-// [채민][repository] 판매글 작성, 수정 ==================================================
+  // [채민][repository] 판매글 작성, 수정 ==================================================
   // 판매글 생성
-  createPost = async (item) => {
-    console.log(`nickname: ${item.nickname}`);
-
-    const createPost = await itemsModel.create({
-      ...item,
-      createdAt: String(Date.now()),
-      updatedAt: String(Date.now()),
+  createPost = async (title, content) => {
+    return await this.itemsModel.create({
+      title,
+      content,
     });
-
-    return createPost;
   };
 
   // 판매글 수정
   updatePost = async (item_id, item) => {
-    const updatePost = await itemsModel.update(
+    const updatePost = await this.itemsModel.update(
       {
         ...item,
         updatedAt: String(Date.now()),
       },
-      { where: { item_id } }
+      { where: { item_id } },
     );
 
     if (updatePost) {
@@ -85,12 +88,12 @@ class ItemRepository {
 
   // 판매글 status 수정
   updateStatus = async (item) => {
-    const updateStatus = await itemsModel.update(
+    const updateStatus = await this.itemsModel.update(
       {
         ...item,
         updatedAt: String(Date.now()),
       },
-      { where: { item_id: item.item_id } }
+      { where: { item_id: item.item_id } },
     );
 
     if (updateStatus) {
@@ -99,6 +102,6 @@ class ItemRepository {
       return { message: '수정 실패' };
     }
   };
-
+}
 
 module.exports = ItemRepository;

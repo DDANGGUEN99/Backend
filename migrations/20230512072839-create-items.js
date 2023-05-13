@@ -45,6 +45,7 @@ module.exports = {
       status: {
         allowNull: false,
         type: Sequelize.CHAR(1),
+        defaultValue: 'N',
       },
       likes: {
         allowNull: false,

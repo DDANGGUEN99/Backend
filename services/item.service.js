@@ -1,12 +1,40 @@
+require('dotenv').config();
 const ItemRepository = require('../repositories/item.repository');
 const AppError = require('../utils/appError');
-const { Item } = require('../models');
+const { Items } = require('../models');
 const { sequelize } = require('../models');
 const getCategoryName = require('../utils/catetory.util');
 const getLocationName = require('../utils/location.util');
 
 class ItemService {
-  itemRepository = new ItemRepository(Item);
+  itemRepository = new ItemRepository(Items);
+
+  // 거래글 생성
+  postItem = async (req, res) => {
+    const { category_id, title, content, price } = req.body;
+    const { user_id, nickname, location_id, postImage } = res.locals.user;
+
+    // 파일이 있으면 key값으로 이름을 정해주고 없으면 null
+    const imageFileName = req.file ? req.file.key : null;
+
+    // imageFileName에 파일명이 들어 갔으면 s3 url주소를 추가
+    const postImageUrl = imageFileName
+      ? process.env.S3_STORAGE_URL + imageFileName
+      : null;
+
+    const item = {
+      user_id,
+      nickname,
+      category_id,
+      location_id,
+      title,
+      content,
+      postImageUrl,
+      price,
+    };
+
+    return await this.itemRepository.createItem2(item);
+  };
 
   getItems = async (findInfo) => {
     const items = await this.itemRepository.findAll(findInfo);
@@ -38,39 +66,18 @@ class ItemService {
     if (item.user_id != itemInfo.user_id) {
       throw new AppError(403, '게시글의 삭제 권한이 존재하지 않습니다.');
     }
-    
+
     await this.itemRepository.destroy(itemInfo);
   };
-}
 
-
-// [채민][service] 판매글 작성, 수정 ==================================================
+  // [채민][service] 판매글 작성, 수정 ==================================================
   // 판매글 생성
-  createPost = async (req, res) => {
-    const { category_id, title, content, price } = req.body;
-    const { user_id, location_id, nickname, user_image } = res.locals.user;
-
-    // 파일이 있으면 key값으로 이름을 정해주고 없으면 null
-    const imageFileName = req.file ? req.file.key : null;
-
-    // imageFileName에 파일명이 들어 갔으면 s3 url주소를 추가
-    const postImgUrl = imageFileName
-      ? process.env.S3_STORAGE_URL + imageFileName
-      : null;
-
-    const post = {
-      user_id,
-      nickname,
-      user_image,
-      category_id,
-      location_id,
-      title,
-      content,
-      postImgUrl,
-      price,
-    };
-
-    return await this.itemRepository.createPost(post);
+  createPost = async (title, content) => {
+    try {
+      return await this.itemRepository.createPost(title, content);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   //판매글 수정
@@ -107,7 +114,8 @@ class ItemService {
 
     const findOnePost = await this.itemRepository.findOnePost(item_id);
     if (!findOnePost) throw new error('존재하지 않는 게시글입니다.');
-    if (findOnePost.user_id !== user_id) throw new error('수정 권한이 없습니다.');
+    if (findOnePost.user_id !== user_id)
+      throw new error('수정 권한이 없습니다.');
 
     await this.itemRepository.updatePost(item_id, post);
   };
@@ -129,7 +137,8 @@ class ItemService {
     };
 
     if (!findOnePost) throw new error('존재하지 않는 판매글입니다.');
-    if (findOnePost.user_id !== user_id) throw new error('수정 권한이 없습니다.');
+    if (findOnePost.user_id !== user_id)
+      throw new error('수정 권한이 없습니다.');
 
     if (status === 2) {
       await this.itemRepository.updateStatus(post);
@@ -138,7 +147,6 @@ class ItemService {
       await this.itemRepository.updateStatus(post);
     }
   };
-
-
+}
 
 module.exports = ItemService;
