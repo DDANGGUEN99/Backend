@@ -44,14 +44,14 @@ class ItemController {
   createPost = async (req, res, next) => {
     try {
       const { title, content } = req.body;
-      const post = await this.itemService.createPost({ title, content });
+      const post = await this.itemService.createPost( title, content );
       res.status(201).json({
         success: true,
         message: '판매글이 생성되었습니다.',
         item_id: post.item_id,
       });
     } catch (error) {
-      next(error);
+      next(error, req, res, '판매글 생성에 실패하였습니다.');
     }
   };
 
@@ -65,7 +65,7 @@ class ItemController {
         message: '판매글이 수정되었습니다.',
       });
     } catch (error) {
-      next(error);
+      next(error, req, res, '판매글 수정에 실패하였습니다.');
     }
   };
 
@@ -79,7 +79,7 @@ class ItemController {
         message: '상태가 변경되었습니다.',
       });
     } catch (error) {
-      next(error);
+      next(error, req, res, '상태 변경에 실패하였습니다.');
     }
   };
 }

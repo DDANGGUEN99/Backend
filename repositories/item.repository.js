@@ -53,16 +53,13 @@ class ItemRepository {
 
     // [채민][repository] 판매글 작성, 수정 ==================================================
   // 판매글 생성
-  createPost = async (item) => {
-    console.log(`nickname: ${item.nickname}`);
-
-    const createPost = await this.itemsModel.create({
-      ...item,
-      createdAt: String(Date.now()),
-      updatedAt: String(Date.now()),
-    });
-
-    return createPost;
+  createPost = async (title, content) => {
+      return await this.itemsModel.create(
+        {
+          title, content
+        }
+      )
+  
   };
 
   // 판매글 수정

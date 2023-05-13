@@ -5,6 +5,6 @@ const itemRouter = require('./item.routes');
 const userRouter = require('./user.routes.js');
 // const mypageRouter = require('./mypage.routes');
 router.use('/', [userRouter]);
-router.use('/item', [itemRouter, likeRouter]);
+router.use('/items', [itemRouter]);
 // router.use('/mypage', [mypageRouter]);
 module.exports = router;

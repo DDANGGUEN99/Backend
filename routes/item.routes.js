@@ -40,7 +40,7 @@ router.delete(
 // [채민][item.routes] 판매글 작성, 수정 ==================================================
 // 판매글 생성
 router.post(
-  '/items',
+  '/',
   authMiddleware,
   upload.single('postImgUrl'),
   itemController.createPost.bind(itemController) // bind를 사용하여 올바른 콜백 함수를 전달합니다.
@@ -49,7 +49,7 @@ router.post(
 
 // 판매글 수정
 router.put(
-  '/items/:item_id',
+  '/:item_id',
   authMiddleware,
   upload.single('postImgUrl'),
   itemController.updatePost
