@@ -15,7 +15,7 @@ const allowedExtensions = ['.png', '.jpg', '.jpeg', '.bmp', '.gif'];
 const uploadImage = multer({
   storage: multerS3({
     s3: s3,
-    bucket: 'ddanggeun1',
+    bucket: 'ddanggeun9',
     contentType: multerS3.AUTO_CONTENT_TYPE,
     key: (req, file, callback) => {
       const today = new Date();
@@ -36,7 +36,7 @@ const uploadImage = multer({
       if (!allowedExtensions.includes(extension)) {
         return callback(new Error('확장자 에러'));
       }
-      const photo_ip = `https://ddanggeun1.s3.ap-northeast-2.amazonaws.com/folder/${date}_${randomNumber}`;
+      const photo_ip = `https://ddanggeun9.s3.ap-northeast-2.amazonaws.com/folder/${date}_${randomNumber}`;
       req.photo_ip = photo_ip;
 
       callback(null, `folder/${date}_${randomNumber}`);
