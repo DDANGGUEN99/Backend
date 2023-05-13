@@ -17,4 +17,25 @@ router.delete(
   itemController.deleteItem,
 );
 
+
+// [채민][item.routes] 판매글 작성, 수정 ==================================================
+// 판매글 생성
+router.post(
+  '/items',
+  Auth,
+  multer.upload.single('postImgUrl'),
+  itemController.createPost
+);
+
+// 판매글 수정
+router.put(
+  '/items/:item_id',
+  Auth,
+  multer.upload.single('postImgUrl'),
+  postController.updatePost
+);
+
+// 판매글 상태 수정
+router.put('/items/:item_id', Auth, itemController.updateStatus);
+
 module.exports = router;

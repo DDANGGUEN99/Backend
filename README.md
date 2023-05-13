@@ -39,3 +39,9 @@
 
 - RDS : 김채민 RDS
 - REDIS : 김현수 REDIS
+
+# Branch
+
+- 각 기능 브랜치에서 작업 후 push —> develop 브랜치에 merge는 pull requests를 통해서 하기
+- 모든 pull requests는 팀원들의 확인 후 merge
+- 이슈가 생길 시 issue 탭 활용
