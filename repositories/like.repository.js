@@ -18,8 +18,7 @@ class LikeRepository {
 
   findOne = async (post_id, user_id) => {
     return await Likes.findOne({
-      where: post_id,
-      user_id,
+      where: { post_id, user_id },
       attributes: ['like_id'],
     });
   };
