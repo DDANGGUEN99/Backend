@@ -30,6 +30,21 @@ class UserRepository {
     });
   };
 
+  // 회원정보 수정
+  editProfile = async (user_id, email, nickname, password, location_id) => {
+    return await this.usersModel.update(
+      {
+        email,
+        nickname,
+        password,
+        location_id,
+      },
+      {
+        where: { user_id: user_id },
+      },
+    );
+  };
+
   // 회원탈퇴
   withdrawal = async (user_id) => {
     await this.usersModel.destroy({ where: { user_id } });
