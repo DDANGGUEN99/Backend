@@ -1,5 +1,4 @@
 const LikeService = require('../services/likes.service');
-const AppError = require('../utils/appError');
 
 class LikesController {
   likeService = new LikeService();
