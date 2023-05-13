@@ -27,13 +27,14 @@ class UserService {
   };
 
   // 회원가입
-  signup = async (email, nickname, password, location_id) => {
+  signup = async (email, nickname, password, location_id, user_image) => {
     try {
       return await this.userRepository.signup(
         nickname,
         email,
         password,
         location_id,
+        user_image,
       );
     } catch (err) {
       console.error(err);
@@ -44,14 +45,21 @@ class UserService {
   login = async (user) => {
     try {
       // 토큰 생성
-      const accesstoken = jwt.createAccessToken(user.user_id, user.nickname);
+      const accesstoken = jwt.createAccessToken(
+        user.user_id,
+        user.nickname,
+        user.location_id,
+        user.user_image,
+      );
       const refreshtoken = jwt.createRefreshToken();
 
       // redis 저장 준비
       const key = refreshtoken;
       const value = JSON.stringify({
-        userId: user.userId,
+        user_id: user.user_id,
         nickname: user.nickname,
+        location_id: user.location_id,
+        user_image: user.user_image,
       });
 
       // REDIS 저장 실행
@@ -75,7 +83,14 @@ class UserService {
   };
 
   // 회원정보 수정
-  editProfile = async (user_id, nickname, email, password, location_id) => {
+  editProfile = async (
+    user_id,
+    nickname,
+    email,
+    password,
+    location_id,
+    user_image,
+  ) => {
     try {
       const setProfileData = await this.userRepository.editProfile(
         user_id,
@@ -83,6 +98,7 @@ class UserService {
         email,
         password,
         location_id,
+        user_image,
       );
       return setProfileData;
     } catch (err) {

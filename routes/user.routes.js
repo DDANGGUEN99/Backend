@@ -19,7 +19,7 @@ router.post('/signup', userController.signup);
 router.post('/login', userController.login);
 
 // // 로그인 테스트
-// router.post('/login/test', authMiddleware, userController.authMiddlewareTest);
+router.post('/login/test', authMiddleware, userController.authMiddlewareTest);
 
 // // 로그아웃
 // router.post('/logout', authMiddleware, userController.logout);
