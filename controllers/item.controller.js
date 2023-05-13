@@ -32,4 +32,43 @@ class ItemController {
   }
 }
 
-module.exports = ItemController;
+// [채민][control] 판매글 작성, 수정 ==================================================
+  // 판매글 작성
+  createPost = async (req, res, next) => {
+    try {
+      const post = await this.itemService.createPost(req, res);
+
+      res.status(200).send({
+        ok: true,
+        message: '판매글이 생성되었습니다.',
+        item_id: post.item_id,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // 판매글 수정
+  updatePost = async (req, res, next) => {
+    try {
+      await this.itemService.updatePost(req, res);
+
+      res.status(200).send({ ok: true, message: '판매글이 수정되었습니다.' });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // 판매글 status 수정
+  updateStatus = async (req, res, next) => {
+    try {
+      await this.itemService.updateStatus(req, res);
+
+      res.status(200).send({ ok: true, message: '상태가 변경되었습니다.' });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+
+  module.exports = ItemController;
