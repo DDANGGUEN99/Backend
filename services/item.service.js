@@ -46,31 +46,12 @@ class ItemService {
 
 // [채민][service] 판매글 작성, 수정 ==================================================
   // 판매글 생성
-  createPost = async (req, res) => {
-    const { category_id, title, content, price } = req.body;
-    const { user_id, location_id, nickname, user_image } = res.locals.user;
-
-    // 파일이 있으면 key값으로 이름을 정해주고 없으면 null
-    const imageFileName = req.file ? req.file.key : null;
-
-    // imageFileName에 파일명이 들어 갔으면 s3 url주소를 추가
-    const postImgUrl = imageFileName
-      ? process.env.S3_STORAGE_URL + imageFileName
-      : null;
-
-    const post = {
-      user_id,
-      nickname,
-      user_image,
-      category_id,
-      location_id,
-      title,
-      content,
-      postImgUrl,
-      price,
-    };
-
-    return await this.itemRepository.createPost(post);
+  createPost = async (title, content) => {
+    try {
+       return await this.itemRepository.createPost(title, content)
+    } catch (err) {
+      console.error(err)
+    }
   };
 
   //판매글 수정
