@@ -6,6 +6,16 @@ class ItemController {
     this.itemService = new ItemService();
   }
 
+  // 거래글 생성
+  postItem = async (req, res, next) => {
+    try {
+      await this.itemService.postItem(req, res);
+      res.status(200).json({ message: '판매글이 작성되었습니다.' });
+    } catch (error) {
+      next(error, req, res, '판매글 작성에 실패하였습니다.');
+    }
+  };
+
   getItems = async (req, res, next) => {
     try {
       const { page, location_id } = req.body;
@@ -44,7 +54,7 @@ class ItemController {
   createPost = async (req, res, next) => {
     try {
       const { title, content } = req.body;
-      const post = await this.itemService.createPost( title, content );
+      const post = await this.itemService.createPost(title, content);
       res.status(201).json({
         success: true,
         message: '판매글이 생성되었습니다.',

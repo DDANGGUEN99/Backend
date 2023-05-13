@@ -22,6 +22,8 @@ router.post('/upload', upload.single('postImgUrl'), function(req, res) {
   // 파일 업로드 처리 로직을 작성합니다.
 });
 
+router.post('/post', authMiddleware, itemController.postItem);
+
 
 // GET: 판매글 전체 조회
 router.get('/', itemController.getItems);
