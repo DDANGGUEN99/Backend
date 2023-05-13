@@ -2,73 +2,89 @@ const ItemService = require('../services/item.service');
 const AppError = require('../utils/appError');
 
 class ItemController {
-  itemService = new ItemService();
+  constructor() {
+    this.itemService = new ItemService();
+  }
 
   getItems = async (req, res, next) => {
     try {
-      if (!title || !content) {
-        throw new AppError(412, '데이터 형식이 올바르지 않습니다.');
-      }
-      this.itemService.getItems();
+      const items = await this.itemService.getItems();
+      res.status(200).json({
+        success: true,
+        data: items,
+      });
     } catch (error) {
-      next(error, req, res, '게시글 작성에 실패하였습니다.');
+      next(error);
     }
-  }
+  };
 
   getItem = async (req, res, next) => {
     try {
-      this.itemService.getItem();
+      const { item_id } = req.params;
+      const item = await this.itemService.getItem(item_id);
+      res.status(200).json({
+        success: true,
+        data: item,
+      });
     } catch (error) {
-      
+      next(error);
     }
-  }
+  };
 
   deleteItem = async (req, res, next) => {
     try {
-      this.itemService.deleteItem();
+      const { item_id } = req.params;
+      await this.itemService.deleteItem(item_id);
+      res.status(200).json({
+        success: true,
+        message: '게시글이 삭제되었습니다.',
+      });
     } catch (error) {
-      
+      next(error);
     }
-  }
-}
+  };
 
-// [채민][control] 판매글 작성, 수정 ==================================================
-  // 판매글 작성
   createPost = async (req, res, next) => {
     try {
-      const post = await this.itemService.createPost(req, res);
-
-      res.status(200).send({
-        ok: true,
+      const { title, content } = req.body;
+      const post = await this.itemService.createPost({ title, content });
+      res.status(201).json({
+        success: true,
         message: '판매글이 생성되었습니다.',
         item_id: post.item_id,
       });
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   };
 
-  // 판매글 수정
   updatePost = async (req, res, next) => {
     try {
-      await this.itemService.updatePost(req, res);
-
-      res.status(200).send({ ok: true, message: '판매글이 수정되었습니다.' });
-    } catch (err) {
-      next(err);
+      const { item_id } = req.params;
+      const { title, content } = req.body;
+      await this.itemService.updatePost(item_id, { title, content });
+      res.status(200).json({
+        success: true,
+        message: '판매글이 수정되었습니다.',
+      });
+    } catch (error) {
+      next(error);
     }
   };
 
-  // 판매글 status 수정
   updateStatus = async (req, res, next) => {
     try {
-      await this.itemService.updateStatus(req, res);
-
-      res.status(200).send({ ok: true, message: '상태가 변경되었습니다.' });
-    } catch (err) {
-      next(err);
+      const { item_id } = req.params;
+      const { status } = req.body;
+      await this.itemService.updateStatus(item_id, status);
+      res.status(200).json({
+        success: true,
+        message: '상태가 변경되었습니다.',
+      });
+    } catch (error) {
+      next(error);
     }
   };
+}
 
-
-  module.exports = ItemController;
+module.exports = ItemController;

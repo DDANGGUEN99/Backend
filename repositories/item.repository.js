@@ -17,19 +17,18 @@ class ItemRepository {
     });
   }
 
-  destory = async (item_id) => {
-    await this.itemsModel.destory({
+  destroy = async (item_id) => {
+    await this.itemsModel.destroy({
       where: { item_id },
-    })
+    });
   }
-}
 
-// [채민][repository] 판매글 작성, 수정 ==================================================
+  // [채민][repository] 판매글 작성, 수정 ==================================================
   // 판매글 생성
   createPost = async (item) => {
     console.log(`nickname: ${item.nickname}`);
 
-    const createPost = await itemsModel.create({
+    const createPost = await this.itemsModel.create({
       ...item,
       createdAt: String(Date.now()),
       updatedAt: String(Date.now()),
@@ -40,7 +39,7 @@ class ItemRepository {
 
   // 판매글 수정
   updatePost = async (item_id, item) => {
-    const updatePost = await itemsModel.update(
+    const updatePost = await this.itemsModel.update(
       {
         ...item,
         updatedAt: String(Date.now()),
@@ -57,7 +56,7 @@ class ItemRepository {
 
   // 판매글 status 수정
   updateStatus = async (item) => {
-    const updateStatus = await itemsModel.update(
+    const updateStatus = await this.itemsModel.update(
       {
         ...item,
         updatedAt: String(Date.now()),
@@ -71,6 +70,6 @@ class ItemRepository {
       return { message: '수정 실패' };
     }
   };
-
+}
 
 module.exports = ItemRepository;
