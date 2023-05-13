@@ -18,10 +18,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // 사용 예시:
+// 이 미들웨어 같은 곳에서 처리하는 건가?
 router.post('/upload', upload.single('postImgUrl'), function(req, res) {
   // 파일 업로드 처리 로직을 작성합니다.
 });
 
+// POST : 연습용 판매글 작성
 router.post('/post', authMiddleware, itemController.postItem);
 
 
@@ -45,7 +47,7 @@ router.post(
   '/',
   authMiddleware,
   upload.single('postImgUrl'),
-  itemController.createPost.bind(itemController) // bind를 사용하여 올바른 콜백 함수를 전달합니다.
+  itemController.createPost // bind를 사용하여 올바른 콜백 함수를 전달합니다.
 );
 
 

@@ -12,28 +12,28 @@ class ItemService {
   // 거래글 생성
   postItem = async (req, res) => {
     const { category_id, title, content, price } = req.body;
-    const { user_id, nickname, location_id, user_image } = res.locals.user;
+    const { user_id, nickname, location_id, postImage } = res.locals.user;
 
     // 파일이 있으면 key값으로 이름을 정해주고 없으면 null
     const imageFileName = req.file ? req.file.key : null;
 
     // imageFileName에 파일명이 들어 갔으면 s3 url주소를 추가
-    const postImgUrl = imageFileName
+    const postImageUrl = imageFileName
       ? process.env.S3_STORAGE_URL + imageFileName
       : null;
 
-    const post = {
+    const item = {
       user_id,
       nickname,
       category_id,
       location_id,
       title,
       content,
-      user_image,
+      postImageUrl,
       price,
     };
 
-    return await this.itemRepository.createItem2(post);
+    return await this.itemRepository.createItem2(item);
   };
 
   getItems = async (findInfo) => {

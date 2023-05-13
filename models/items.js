@@ -65,6 +65,7 @@ module.exports = (sequelize, DataTypes) => {
       status: {
         allowNull: false,
         type: DataTypes.CHAR(1),
+        defaultValue: 'N',
       },
       likes: {
         allowNull: false,
