@@ -72,7 +72,7 @@ class ItemService {
 
   // [채민][service] 판매글 작성, 수정 ==================================================
   // 판매글 생성
-  createPost = async (title, content) => {
+  async createPost(title, content) {
     try {
       return await this.itemRepository.createPost(title, content);
     } catch (err) {

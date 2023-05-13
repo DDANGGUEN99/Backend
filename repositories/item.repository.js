@@ -3,8 +3,8 @@ const { Items, Likes } = require('../models');
 const { Sequelize } = require('sequelize');
 
 class ItemRepository {
-  constructor(itemsModel) {
-    this.itemsModel = itemsModel;
+  constructor(items) {
+    this.itemsModel = items;
   }
 
   // 거래글 생성 : post는 객체
@@ -60,7 +60,7 @@ class ItemRepository {
     }
   };
 
-  // [채민][repository] 판매글 작성, 수정 ==================================================
+// [채민][repository] 판매글 작성, 수정 ==================================================
   // 판매글 생성
   createPost = async (title, content) => {
     return await this.itemsModel.create({
