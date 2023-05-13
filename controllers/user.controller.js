@@ -107,14 +107,56 @@ class UserController {
   getProfile = async (req, res, next) => {
     const { user_id } = res.locals.user;
     const profileData = await this.userService.getProfile(user_id);
-    return res.status(200).json({ userData: profileData });
+
+    // 회원정보 조회 결과
+    if (!profileData) {
+      return res.status(400).json({ errorMessage: '회원정보 조회 실패' });
+    } else {
+      return res.status(200).json({ userData: profileData });
+    }
+  };
+
+  // 회원정보 수정
+  editProfile = async (req, res, next) => {
+    const { user_id } = res.locals.user;
+    const { email, nickname, password, location_id } = req.body;
+
+    // input data 유효성 검사
+    if (!email || !nickname || !password || !location_id) {
+      return res.status(412).json({ errorMessage: '데이터 형식 비정상' });
+    }
+
+    // 패스워드에 닉네임 포함여부 검사
+    if (password.includes(nickname)) {
+      return res.status(412).json({ errorMessage: '패스워드에 닉네임 포함' });
+    }
+
+    // 회원정보 수정 처리
+    const profileData = await this.userService.editProfile(
+      user_id,
+      nickname,
+      email,
+      password,
+      location_id,
+    );
+
+    // 회원정보 수정 결과
+    if (!profileData) {
+      return res.status(412).json({ errorMessage: '회원정보 수정 실패' });
+    } else {
+      return res.status(200).end();
+    }
   };
 
   // 회원 탈퇴
   withdrawal = async (req, res, next) => {
     const { user_id } = res.locals.user;
-    await this.userService.withdrawal(user_id);
-    return res.status(200).end();
+    const result = await this.userService.withdrawal(user_id);
+    if (!result) {
+      return res.status(400).json({ errorMessage: '회원탈퇴 실패' });
+    } else {
+      return res.status(200).end();
+    }
   };
 }
 
