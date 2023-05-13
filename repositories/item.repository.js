@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { Item } = require('../models');
+const { Items, Likes } = require('../models');
 const { Sequelize } = require('sequelize');
 
 class ItemRepository {
@@ -7,21 +7,49 @@ class ItemRepository {
     this.itemsModel = itemsModel;
   }
 
-  findAll = async () => {
-    await this.itemsModel.findAll();
-  }
+  // status 관련 코드도 추가해야 됨
+  findAll = async (findInfo) => {
+    const { page, location_id, user_id } = findInfo;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+    const items = await this.itemsModel.findAll({
+      include: [
+        {
+          model: Likes,
+          attributes: [],
+          where: { user_id },
+          required: false,
+        },
+      ],
+      where: { location_id },
+      limit,
+      offset,
+    });
+    return items;
+  };
 
   findOne = async (item_id) => {
-    await this.itemsModel.findOne({
+    return await this.itemsModel.findOne({
       where: { item_id },
     });
-  }
+  };
 
-  destory = async (item_id) => {
-    await this.itemsModel.destory({
-      where: { item_id },
-    })
-  }
+  destroy = async (itemInfo) => {
+    await this.itemsModel.destroy({
+      where: itemInfo,
+    });
+  };
+
+  isLiked = async (findInfo) => {
+    const like = await this.Likes.findOne({
+      where: findInfo,
+    });
+    if (!like) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 }
 
 // [채민][repository] 판매글 작성, 수정 ==================================================

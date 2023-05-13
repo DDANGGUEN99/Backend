@@ -6,28 +6,36 @@ class ItemController {
 
   getItems = async (req, res, next) => {
     try {
-      if (!title || !content) {
-        throw new AppError(412, '데이터 형식이 올바르지 않습니다.');
-      }
-      this.itemService.getItems();
+      const { page, location_id } = req.body;
+      const { user_id } = res.locals.user;
+      const findInfo = { page, location_id, user_id };
+      const items = await this.itemService.getItems(findInfo);
+      res.status(200).json({ items });
     } catch (error) {
-      next(error, req, res, '게시글 작성에 실패하였습니다.');
+      next(error, req, res, '판매글 조회에 실패하였습니다.');
     }
   }
 
   getItem = async (req, res, next) => {
     try {
-      this.itemService.getItem();
+      const { item_id } = req.body;
+      const { user_id } = res.locals.user;
+      const findInfo = { item_id, user_id };
+      const item = await this.itemService.getItem(findInfo);
+      res.status(200).json({ item });
     } catch (error) {
-      
+      next(error, req, res, '판매글 조회에 실패하였습니다.');
     }
   }
 
   deleteItem = async (req, res, next) => {
     try {
-      this.itemService.deleteItem();
+      const item_id = req.body;
+      const user_id = res.locals.user;
+      const itemInfo = { item_id, user_id };
+      await this.itemService.deleteItem(itemInfo);
     } catch (error) {
-      
+      next(error, req, res, '판매글 삭제에 실패하였습니다.');
     }
   }
 }
