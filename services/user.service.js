@@ -3,6 +3,7 @@ const jwt = require('../utils/jwt.js');
 const { Users } = require('../models');
 const UserRepository = require('../repositories/user.repository');
 const RedisClientRepository = require('../repositories/redis.repository.js');
+const getLocationName = require('../utils/location.util.js');
 
 class UserService {
   userRepository = new UserRepository(Users);
@@ -51,7 +52,7 @@ class UserService {
         user.location_id,
         user.user_image,
       );
-      const refreshtoken = jwt.createRefreshToken();
+      const refreshtoken = jwt.createRefreshToken(user.user_id);
 
       // redis 저장 준비
       const key = refreshtoken;
@@ -75,32 +76,23 @@ class UserService {
   getProfile = async (user_id) => {
     try {
       const getProfileData = await this.userRepository.getProfile(user_id);
-      // 추후 location_id -> location_name으로 변경해서 Fe에 전달해야함
-      return getProfileData;
+      const setProfileData = {
+        user_id: getProfileData.user_id,
+        nickname: getProfileData.nickname,
+        email: getProfileData.email,
+        location_name: getLocationName(getProfileData.dataValues.location_id),
+        user_image: getProfileData.user_image,
+      };
+      return setProfileData;
     } catch (err) {
       console.error(err);
     }
   };
 
   // 회원정보 수정
-  editProfile = async (
-    user_id,
-    nickname,
-    email,
-    password,
-    location_id,
-    user_image,
-  ) => {
+  editProfile = async (userData) => {
     try {
-      const setProfileData = await this.userRepository.editProfile(
-        user_id,
-        nickname,
-        email,
-        password,
-        location_id,
-        user_image,
-      );
-      return setProfileData;
+      return await this.userRepository.editProfile(userData);
     } catch (err) {
       console.error(err);
     }
