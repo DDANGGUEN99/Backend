@@ -2,6 +2,7 @@ class UserRepository {
   constructor(users) {
     this.usersModel = users;
   }
+
   // 회원찾기 with email
   getUserWithEmail = async (email) => {
     return await this.usersModel.findOne({ where: { email } });
@@ -32,24 +33,17 @@ class UserRepository {
   };
 
   // 회원정보 수정
-  editProfile = async (
-    user_id,
-    email,
-    nickname,
-    password,
-    location_id,
-    user_image,
-  ) => {
+  editProfile = async (userData) => {
     return await this.usersModel.update(
       {
-        email,
-        nickname,
-        password,
-        location_id,
-        user_image,
+        email: userData.email,
+        nickname: userData.nickname,
+        password: userData.password,
+        location_id: userData.location_id,
+        user_image: userData.user_image,
       },
       {
-        where: { user_id: user_id },
+        where: { user_id: userData.user_id },
       },
     );
   };
