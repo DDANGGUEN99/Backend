@@ -109,8 +109,14 @@ class UserController {
 
   // 로그아웃
   logout = async (req, res) => {
-    const { refreshtoken } = req.headers;
-    // const { refreshtoken } = req.cookies;
+    let refreshtoken;
+
+    if (req.cookies.refreshtoken) {
+      refreshtoken = req.cookies.refreshtoken;
+    } else {
+      refreshtoken = req.headers.refreshtoken;
+    }
+
     const [tokenType, tokenValue] = refreshtoken.split(' ');
     res.clearCookie();
     await this.userService.logout(tokenValue);
