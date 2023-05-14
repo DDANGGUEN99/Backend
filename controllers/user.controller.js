@@ -110,6 +110,8 @@ class UserController {
   // 로그인 검증 - 테스트용
   authMiddlewareTest = async (req, res, next) => {
     try {
+      res.locals.user;
+
       return res.status(200).send(res.locals.user);
     } catch (err) {
       console.error(err);

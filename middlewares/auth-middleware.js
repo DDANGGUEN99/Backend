@@ -1,5 +1,5 @@
+const { Users } = require('../models');
 const redis = require('redis');
-
 const RedisClientRepository = require('../repositories/redis.repository.js');
 const jwt = require('../utils/jwt.js');
 
@@ -7,84 +7,79 @@ const redisClientRepository = new RedisClientRepository(redis);
 
 // 사용자 인증 미들웨어 - Redis 방식
 module.exports = async (req, res, next) => {
-  const { accesstoken, refreshtoken } = req.cookies;
-  // const { accesstoken, refreshtoken } = req.headers;
-
-  // accessToken, refreshToken 존재 유무를 체크 : (falsy) 토큰이 존재하지 않습니다.
-  const isAccessToken = accesstoken ? true : false;
-  const isRefreshToken = refreshtoken ? true : false;
-
-  if (!isAccessToken || !isRefreshToken) {
-    return res
-      .status(419)
-      .json({ errorMessage: '쿠키에 토큰 없음, 재로그인 필요' });
-  }
-
-  // accessToken, refreshToken 토큰 타입, 토큰 값 분할 할당
-  const [accessTokenType, accessTokenValue] = accesstoken.split(' ');
-  const [refreshTokenType, refreshTokenValue] = refreshtoken.split(' ');
-
-  // accessToken, refreshToken 토큰 타입 확인 : (falsy) 타입이 정상적이지 않습니다.
-  const isAccessTokenType = jwt.validateTokenType(accessTokenType);
-  const isRefreshTokenType = jwt.validateTokenType(refreshTokenType);
-
-  if (!isAccessTokenType || !isRefreshTokenType) {
-    return res.status(419).json({ errorMessage: '타입 불량, 재로그인 필요' });
-  }
-
   try {
-    // 토큰 값 JWT 검증 : (falsy) 토큰이 만료되었습니다.
-    const isAccessTokenValue = jwt.validateTokenValue(accessTokenValue);
-    const isRefreshTokenValue = jwt.validateTokenValue(refreshTokenValue);
+    // const { accesstoken, refreshtoken } = req.headers;
+    const { accesstoken, refreshtoken } = req.cookies;
 
-    if (!isRefreshTokenValue) {
+    // 쿠키 존재 유무 체크 : (falsy) 쿠키 토큰이 존재하지 않습니다.
+    const isaccesstoken = accesstoken ? true : false;
+    const isrefreshtoken = refreshtoken ? true : false;
+
+    if (!isaccesstoken || !isrefreshtoken) {
       return res
-        .status(419)
-        .json({ errorMessage: 'Refresh 토큰 만료, 재로그인 필요' });
+        .status(401)
+        .json({ errorMessage: '쿠키에 모든 토큰 없음, 로그인 필요' });
     }
 
-    if (!isAccessTokenValue) {
-      // redis refreshToken 로드 실행
-      async function getData(refreshTokenValue) {
-        try {
-          const data = await redisClientRepository.getData(refreshTokenValue);
-          if (data) {
-            const { user_id, nickname } = JSON.parse(data);
-            if (user_id.length < 0 && !nickname.length < 0) {
-              // return Promise.reject({
-              //   errorMessage:
-              //     "Refresh Token의 정보가 서버에 존재하지 않습니다.",
-              // });
-              return res.status(419).json({
-                errorMessage: 'Refresh 서버에 없음, 재로그인 필요',
-              });
-            } else {
-              return Promise.resolve({ user_id, nickname });
-            }
-          } else {
-            return res.status(419).json({
-              errorMessage: 'Refresh 서버에 없음, 재로그인 필요',
-            });
-          }
-        } catch (e) {
-          return res.status(419).json({
-            errorMessage: 'Refresh 서버에 없음, 재로그인 필요',
-          });
-        }
+    // 쿠키 토큰 타입, 토큰 값 분할 할당
+    const [accesstokenType, accesstokenValue] = accesstoken.split(' ');
+    const [refreshtokenType, refreshtokenValue] = refreshtoken.split(' ');
+
+    // 쿠키 토큰 타입 확인 : (falsy) 토큰타입이 정상적이지 않습니다.
+    const isaccesstokenType = jwt.validateTokenType(accesstokenType);
+    const isrefreshtokenType = jwt.validateTokenType(refreshtokenType);
+
+    if (!isaccesstokenType) {
+      return res
+        .status(402)
+        .json({ errorMessage: '엑세스 토큰 타입 불량, 로그인 필요' });
+    }
+
+    if (!isrefreshtokenType) {
+      return res
+        .status(402)
+        .json({ errorMessage: '리프레시 토큰 타입 불량, 로그인 필요' });
+    }
+
+    // 토큰 값 JWT 검증 : (falsy) 토큰이 만료되었습니다.
+    const isrefreshtokenValue = jwt.validateTokenValue(refreshtokenValue);
+    const isaccesstokenValue = jwt.validateTokenValue(accesstokenValue);
+
+    if (isrefreshtokenValue) {
+      // redis에 cookie.refreshtoken와 동일한게 있는지 확인
+      const redis_user_id = await redisClientRepository.getData(
+        refreshtokenValue,
+      );
+      if (!redis_user_id) {
+        return res.status(401).send('서버에 리프레시 토큰 없음, 재로그인 필요');
       }
-
-      const { user_id, nickname } = await getData(refreshTokenValue);
-
-      // Access Token 새발급
-      const newAccessToken = jwt.createAccessToken(user_id, nickname);
-
-      res.locals.user = jwt.getAccessTokenPayload(newAccessToken);
-      res.cookie('accessToken', `Bearer ${newAccessToken}`);
-      res
-        .status(200)
-        .json({ accesstoken: newAccessToken, refreshtoken: refreshTokenValue });
     }
-    res.locals.user = jwt.getAccessTokenPayload(accessTokenValue);
+
+    if (!isaccesstokenValue) {
+      // // Redis / refresh token이 갖고 있는 user_id 가져오기
+      // const redis_user_id = await redisClientRepository.getData(
+      //   refreshtokenValue,
+      // );
+      // // Users DB에서 redis_user_id와 같은 회원정보 가져오기
+      // const userData = await Users.findOne({
+      //   attributes: ['user_id', 'nickname', 'location_id', 'user_image'],
+      //   where: { user_id: redis_user_id },
+      // });
+      // // Access Token 새발급
+      // const newaccesstokenValue = jwt.createaccesstoken(
+      //   userData.dataValues.user_id,
+      //   userData.dataValues.nickname,
+      //   userData.dataValues.location_id,
+      //   userData.dataValues.user_image,
+      // );
+      // res.locals.user = jwt.getTokenPayload(newaccesstokenValue);
+      // res.cookie('accesstoken', `Bearer ${newaccesstokenValue}`);
+      // res.status(200).json({
+      //   accesstoken: newaccesstokenValue,
+      //   refreshtoken: refreshtokenValue,
+      // });
+    }
+    res.locals.user = jwt.getTokenPayload(accesstokenValue);
     next();
   } catch (err) {
     console.error(err);
