@@ -72,6 +72,10 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 0,
         type: DataTypes.INTEGER,
       },
+      item_images: {
+        allowNull: true,
+        type: DataTypes.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

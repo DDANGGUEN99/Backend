@@ -11,7 +11,11 @@ class ItemRepository {
   createItem2 = async (post) => {
     console.log(`nickname: ${post.nickname}`);
 
-    const createPost = await itemsModel.create({...post});
+    const createPost = await this.itemsModel.create({
+      ...post,
+      category_id: 1,
+      price: 100,
+    });
 
     return createPost;
   };
@@ -60,31 +64,37 @@ class ItemRepository {
     }
   };
 
-// [채민][repository] 판매글 작성, 수정 ==================================================
+  // [채민][repository] 판매글 작성, 수정 ==================================================
   // 판매글 생성
-  createPost = async (title, content) => {
+  setItem = async (item) => {
     return await this.itemsModel.create({
-      title,
-      content,
+      user_id : item.user_id,
+      nickname : item.nickname,
+      category_id : item.category_id,
+      title : item.title,
+      content : item.content,
+      price : item.price,
+      location_id : item.location_id,
+      status : item.status,
+      item_images : item.item_images,
     });
   };
 
   // 판매글 수정
-  updatePost = async (item_id, item) => {
-    const updatePost = await this.itemsModel.update(
+  updateItem = async (item) => {
+    const updateItemData = await this.itemsModel.update(
       {
-        ...item,
-        updatedAt: String(Date.now()),
+        ...item
       },
-      { where: { item_id } },
+      { where: { item_id : item.item_id } },
     );
-
-    if (updatePost) {
-      return { message: '판매글이 수정되었습니다.' };
-    } else {
-      return { message: '수정 실패' };
-    }
+    return updateItemData;
   };
+
+  // 판매글 찾기용
+  getItemOne = async (item_id) => {
+    return await this.itemsModel.findOne({ where: { item_id }});
+  }
 
   // 판매글 status 수정
   updateStatus = async (item) => {

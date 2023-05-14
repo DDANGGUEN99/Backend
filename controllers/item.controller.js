@@ -7,12 +7,34 @@ class ItemController {
   }
 
   // 거래글 생성
-  postItem = async (req, res, next) => {
+  setItem = async (req, res, next) => {
     try {
-      await this.itemService.postItem(req, res);
-      res.status(200).json({ message: '판매글이 작성되었습니다.' });
+      const { user_id, nickname, location_id } = res.locals.user;
+      const {
+        category_id,
+        title,
+        content,
+        price,
+        status,
+        item_images,
+      } = req.body;
+
+      const item = {user_id, nickname, category_id,
+        title,
+        content,
+        price,
+        location_id,
+        status,
+        item_images}
+
+      // 예외처리 / 검증 해야함 (추후)
+
+      await this.itemService.setItem(item);
+      return res.status(200).json({ message: '판매글 작성 성공' });
     } catch (error) {
-      next(error, req, res, '판매글 작성에 실패하였습니다.');
+      console.error (error);
+      // next(error, req, res, '판매글 작성 실패');
+      return res.status(400).json({ message: '판매글 작성 실패' });
     }
   };
 
@@ -30,7 +52,7 @@ class ItemController {
 
   getItem = async (req, res, next) => {
     try {
-      const { item_id } = req.body;
+      const { item_id } = req.params;
       const { user_id } = res.locals.user;
       const findInfo = { item_id, user_id };
       const item = await this.itemService.getItem(findInfo);
@@ -51,29 +73,37 @@ class ItemController {
     }
   };
 
-  createPost = async (req, res, next) => {
-    try {
-      const { title, content } = req.body;
-      const post = await this.itemService.createPost(title, content);
-      res.status(201).json({
-        success: true,
-        message: '판매글이 생성되었습니다.',
-        item_id: post.item_id,
-      });
-    } catch (error) {
-      next(error, req, res, '판매글 생성에 실패하였습니다.');
-    }
-  };
-
-  updatePost = async (req, res, next) => {
+  updateItem = async (req, res, next) => {
     try {
       const { item_id } = req.params;
-      const { title, content } = req.body;
-      await this.itemService.updatePost(item_id, { title, content });
-      res.status(200).json({
-        success: true,
-        message: '판매글이 수정되었습니다.',
-      });
+      const { user_id, location_id } = res.locals.user;
+      const { category_id, title, content, price, status, item_images } = req.body;
+
+      const item = {
+        item_id,
+        user_id,
+        category_id,
+        title,
+        content,
+        price,
+        location_id,
+        status,
+        item_images,
+      };
+
+      const getItemData = await this.itemService.getItemOne(item_id);
+
+      if (!getItemData) {
+        throw new Error('존재하지 않는 게시글입니다.');
+      }
+
+      if (getItemData.user_id !== user_id) {
+        throw new Error('수정 권한이 없습니다.');
+      }
+
+      await this.itemService.updateItem(item);
+
+      return res.status(200).end();
     } catch (error) {
       next(error, req, res, '판매글 수정에 실패하였습니다.');
     }
