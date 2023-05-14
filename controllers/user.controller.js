@@ -13,6 +13,7 @@ class UserController {
 
     // Users.email 검색
     const user = await this.userService.getUserWithEmail(email);
+
     if (!user) {
       return res.status(200).end();
     } else {
@@ -45,6 +46,8 @@ class UserController {
     if (!email || !nickname || !password || !location_id) {
       return res.status(412).json({ errorMessage: '데이터 형식 비정상' });
     }
+
+    // 상세한 예외처리 Fe 협의 필요
 
     // 패스워드에 닉네임 포함여부 검사
     if (password.includes(nickname)) {
@@ -131,31 +134,24 @@ class UserController {
 
   // 회원정보 수정
   editProfile = async (req, res, next) => {
-    const { user_id } = res.locals.user;
-    const { email, nickname, password, location_id, user_image } = req.body;
+    const { user_id, location_id } = res.locals.user;
+    const { email, nickname, password, user_image } = req.body;
 
-    // input data 유효성 검사
-    // if (!email || !nickname || !password || !location_id) {
-    //   return res.status(412).json({ errorMessage: '데이터 형식 비정상' });
-    // }
-
-    // 패스워드에 닉네임 포함여부 검사
-    // if (password.includes(nickname)) {
-    //   return res.status(412).json({ errorMessage: '패스워드에 닉네임 포함' });
-    // }
-
-    // 회원정보 수정 처리
-    const profileData = await this.userService.editProfile(
+    // 입력받은 값을 userData 객체에 할당
+    const userData = {
       user_id,
       nickname,
       email,
       password,
       location_id,
       user_image,
-    );
+    };
 
-    // 회원정보 수정 결과
-    if (!profileData) {
+    // 회원정보 수정 처리 결과값 가져오기 (성공: 1, 실패: 0)
+    const updateResult = await this.userService.editProfile(userData);
+
+    // 회원정보 수정 결과에 따른 응답 핸들러
+    if (!updateResult) {
       return res.status(412).json({ errorMessage: '회원정보 수정 실패' });
     } else {
       return res.status(200).end();
