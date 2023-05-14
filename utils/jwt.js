@@ -47,7 +47,7 @@ module.exports = {
         return jwt.decode(tokenValue);
       }
     } catch (e) {
-      return false;
+      return null;
     }
   },
 };
