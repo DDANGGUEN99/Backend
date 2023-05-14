@@ -46,22 +46,23 @@ class UserService {
   login = async (user) => {
     try {
       // 토큰 생성
-      const accesstoken = jwt.createAccessToken(
+      const accesstoken = jwt.createaccesstoken(
         user.user_id,
         user.nickname,
         user.location_id,
         user.user_image,
       );
-      const refreshtoken = jwt.createRefreshToken(user.user_id);
+      const refreshtoken = jwt.createrefreshtoken(user.user_id);
 
       // redis 저장 준비
       const key = refreshtoken;
-      const value = JSON.stringify({
-        user_id: user.user_id,
-        nickname: user.nickname,
-        location_id: user.location_id,
-        user_image: user.user_image,
-      });
+      const value = user.user_id;
+      // const value = JSON.stringify({
+      //   user_id: user.user_id,
+      //   nickname: user.nickname,
+      //   location_id: user.location_id,
+      //   user_image: user.user_image,
+      // });
 
       // REDIS 저장 실행
       const EXPIRE_TIME = 1209600; // 14일로 셋팅

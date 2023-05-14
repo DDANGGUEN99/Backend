@@ -8,7 +8,15 @@ const port = process.env.HOST_PORT;
 const cookieParser = require('cookie-parser');
 const router = require('./routes');
 
+// cors
 app.use(cors());
+// app.use(
+//   cors({
+//     origin: '*',
+//     credentials: 'true',
+//     // cors options
+//   }),
+// );
 app.use(express.json());
 app.use(cookieParser());
 
