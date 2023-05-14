@@ -44,40 +44,36 @@ module.exports = async (req, res, next) => {
     // 토큰 값 JWT 검증 : (falsy) 토큰이 만료되었습니다.
     const isrefreshtokenValue = jwt.validateTokenValue(refreshtokenValue);
     const isaccesstokenValue = jwt.validateTokenValue(accesstokenValue);
+    let redis_user_id;
 
     if (isrefreshtokenValue) {
       // redis에 cookie.refreshtoken와 동일한게 있는지 확인
-      const redis_user_id = await redisClientRepository.getData(
-        refreshtokenValue,
-      );
+      redis_user_id = await redisClientRepository.getData(refreshtokenValue);
+      console.log(redis_user_id);
       if (!redis_user_id) {
-        return res.status(401).send('서버에 리프레시 토큰 없음, 재로그인 필요');
+        return res.status(403).send('서버에 리프레시 토큰 없음, 재로그인 필요');
       }
     }
 
     if (!isaccesstokenValue) {
-      // // Redis / refresh token이 갖고 있는 user_id 가져오기
-      // const redis_user_id = await redisClientRepository.getData(
-      //   refreshtokenValue,
-      // );
-      // // Users DB에서 redis_user_id와 같은 회원정보 가져오기
-      // const userData = await Users.findOne({
-      //   attributes: ['user_id', 'nickname', 'location_id', 'user_image'],
-      //   where: { user_id: redis_user_id },
-      // });
-      // // Access Token 새발급
-      // const newaccesstokenValue = jwt.createaccesstoken(
-      //   userData.dataValues.user_id,
-      //   userData.dataValues.nickname,
-      //   userData.dataValues.location_id,
-      //   userData.dataValues.user_image,
-      // );
-      // res.locals.user = jwt.getTokenPayload(newaccesstokenValue);
-      // res.cookie('accesstoken', `Bearer ${newaccesstokenValue}`);
-      // res.status(200).json({
-      //   accesstoken: newaccesstokenValue,
-      //   refreshtoken: refreshtokenValue,
-      // });
+      // Users DB에서 redis_user_id와 같은 회원정보 가져오기
+      const userData = await Users.findOne({
+        attributes: ['user_id', 'nickname', 'location_id', 'user_image'],
+        where: { user_id: redis_user_id },
+      });
+      // Access Token 새발급
+      const newaccesstokenValue = jwt.createaccesstoken(
+        userData.dataValues.user_id,
+        userData.dataValues.nickname,
+        userData.dataValues.location_id,
+        userData.dataValues.user_image,
+      );
+      res.locals.user = jwt.getTokenPayload(newaccesstokenValue);
+      res.cookie('accesstoken', `Bearer ${newaccesstokenValue}`);
+      res.status(200).json({
+        accesstoken: newaccesstokenValue,
+        refreshtoken: refreshtokenValue,
+      });
     }
     res.locals.user = jwt.getTokenPayload(accesstokenValue);
     next();
