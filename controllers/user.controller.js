@@ -107,6 +107,16 @@ class UserController {
     return res.status(200).json({ accesstoken, refreshtoken, userData });
   };
 
+  // 로그아웃
+  logout = async (req, res) => {
+    const { refreshtoken } = req.headers;
+    // const { refreshtoken } = req.cookies;
+    const [tokenType, tokenValue] = refreshtoken.split(' ');
+    res.clearCookie();
+    await this.userService.logout(tokenValue);
+    return res.status(200).end();
+  };
+
   // 로그인 검증 - 테스트용
   authMiddlewareTest = async (req, res, next) => {
     try {
@@ -117,9 +127,6 @@ class UserController {
       console.error(err);
     }
   };
-
-  // 로그아웃
-  // logout = async (req, res) => {};
 
   // 회원정보 조회
   getProfile = async (req, res, next) => {

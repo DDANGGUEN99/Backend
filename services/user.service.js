@@ -73,6 +73,14 @@ class UserService {
     }
   };
 
+  logout = async (refreshtoken) => {
+    try {
+      await this.redisClientRepository.delData(refreshtoken);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // 회원정보 조회
   getProfile = async (user_id) => {
     try {
