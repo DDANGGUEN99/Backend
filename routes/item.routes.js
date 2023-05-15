@@ -3,6 +3,7 @@ const router = express.Router();
 const authMiddleware = require('../middlewares/auth-middleware');
 const ItemController = require('../controllers/item.controller');
 const itemController = new ItemController();
+const multerMiddleware = require('../middlewares/multer');
 const multer = require('multer');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -41,7 +42,7 @@ router.delete(
 
 
 // 판매글 생성
-router.post('/', authMiddleware, itemController.setItem);
+router.post('/', authMiddleware, multerMiddleware.array('item_images', 10), itemController.setItem);
 
 
 // 판매글 수정

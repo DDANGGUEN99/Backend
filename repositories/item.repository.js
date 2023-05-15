@@ -34,7 +34,7 @@ class ItemRepository {
           required: false,
         },
       ],
-      where: { location_id },
+      where: { location_id, status: { [Op.ne]: 'D'} },
       limit,
       offset,
     });
@@ -48,7 +48,9 @@ class ItemRepository {
   };
 
   destroy = async (itemInfo) => {
-    await this.itemsModel.destroy({
+    await this.itemsModel.update({
+      status: 'D',
+    }, {
       where: itemInfo,
     });
   };
@@ -66,17 +68,7 @@ class ItemRepository {
 
   // 판매글 생성
   setItem = async (item) => {
-    return await this.itemsModel.create({
-      user_id : item.user_id,
-      nickname : item.nickname,
-      category_id : item.category_id,
-      title : item.title,
-      content : item.content,
-      price : item.price,
-      location_id : item.location_id,
-      status : item.status,
-      item_images : item.item_images,
-    });
+    return await this.itemsModel.create({...item});
   };
 
   // 판매글 수정
