@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       user_image: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
