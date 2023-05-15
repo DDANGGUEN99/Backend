@@ -12,7 +12,7 @@ const router = require('./routes');
 // app.use(cors());
 app.use(
   cors({
-    origin: '*',
+    origin: true,
     credentials: 'true',
     // cors options
   }),
