@@ -37,7 +37,7 @@ class ItemController {
 
   getItems = async (req, res, next) => {
     try {
-      const { page } = req.body;
+      const page = req.query.page;
       const { user_id, location_id } = res.locals.user;
       const findInfo = { page, location_id, user_id };
       const items = await this.itemService.getItems(findInfo);
@@ -89,17 +89,7 @@ class ItemController {
         item_images,
       };
 
-      const getItemData = await this.itemService.getItemOne(item_id);
-
-      if (!getItemData) {
-        throw new Error('존재하지 않는 게시글입니다.');
-      }
-
-      if (getItemData.user_id !== user_id) {
-        throw new Error('수정 권한이 없습니다.');
-      }
-
-      await this.itemService.updateItem(item);
+      await this.itemService.updateItem(item, user_id);
 
       return res.status(200).end();
     } catch (error) {

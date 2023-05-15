@@ -1,24 +1,11 @@
 const { Op } = require('sequelize');
-const { Items, Likes } = require('../models');
+const { Likes } = require('../models');
 const { Sequelize } = require('sequelize');
 
 class ItemRepository {
   constructor(items) {
     this.itemsModel = items;
   }
-
-  // 거래글 생성 : post는 객체
-  createItem2 = async (post) => {
-    console.log(`nickname: ${post.nickname}`);
-
-    const createPost = await this.itemsModel.create({
-      ...post,
-      category_id: 1,
-      price: 100,
-    });
-
-    return createPost;
-  };
 
   // status 관련 코드도 추가해야 됨
   findAll = async (findInfo) => {
@@ -56,7 +43,7 @@ class ItemRepository {
   };
 
   isLiked = async (findInfo) => {
-    const like = await this.Likes.findOne({
+    const like = await Likes.findOne({
       where: findInfo,
     });
     if (!like) {
