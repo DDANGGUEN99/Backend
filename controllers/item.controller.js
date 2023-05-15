@@ -10,8 +10,7 @@ class ItemController {
   setItem = async (req, res, next) => {
     try {
       const { user_id, nickname, location_id } = res.locals.user;
-      const { category_id, title, content, price, item_images } =
-        req.body;
+      const { category_id, title, content, price, item_images } = req.body;
 
       const item = {
         user_id,
@@ -37,7 +36,7 @@ class ItemController {
 
   getItems = async (req, res, next) => {
     try {
-      const page = req.query.page;
+      const page = Number(req.query.page);
       const { user_id, location_id } = res.locals.user;
       const findInfo = { page, location_id, user_id };
       const items = await this.itemService.getItems(findInfo);
