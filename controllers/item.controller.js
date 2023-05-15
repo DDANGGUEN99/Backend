@@ -38,11 +38,22 @@ class ItemController {
     try {
       const page = Number(req.query.page);
       const { user_id, location_id } = res.locals.user;
+      console.log('res.locals.user: TEST: ', user_id, location_id);
       const findInfo = { page, location_id, user_id };
       const items = await this.itemService.getItems(findInfo);
       res.status(200).json({ items });
     } catch (error) {
       next(error, req, res, '판매글 조회에 실패하였습니다.');
+    }
+  };
+
+  getItemsHS = async (req, res, next) => {
+    const page = Number(req.query.page);
+    const getItemsData = await this.itemService.getItemsHS(page);
+    if (getItemsData) {
+      return res.status(200).json({ itemsData: getItemsData });
+    } else {
+      return res.status(400).send('판매글 조회 실패');
     }
   };
 
