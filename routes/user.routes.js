@@ -7,10 +7,10 @@ const UserController = require('../controllers/user.controller.js');
 const userController = new UserController();
 
 // 이메일 중복검사
-router.post('/checkEmail', userController.checkEmail);
+router.get('/checkEmail/:email', userController.checkEmail);
 
 // 닉네임 중복검사
-router.post('/checkNickname', userController.checkNickname);
+router.get('/checkNickname/:nickname', userController.checkNickname);
 
 // 회원가입
 router.post('/signup', userController.signup);
