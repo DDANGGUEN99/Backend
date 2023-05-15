@@ -40,23 +40,13 @@ router.delete(
 );
 
 
-// [채민][item.routes] 판매글 작성, 수정 ==================================================
 // 판매글 생성
 router.post('/', authMiddleware, itemController.setItem);
 
 
 // 판매글 수정
-// router.put(
-//   '/:item_id',
-//   authMiddleware,
-//   upload.single('postImgUrl'),
-//   itemController.updatePost
-//   );
 router.put('/:item_id', authMiddleware, itemController.updateItem);
 
 
-
-// 판매글 상태 수정
-// router.put('/status/:item_id', authMiddleware, itemController.updateStatus);
 
 module.exports = router;

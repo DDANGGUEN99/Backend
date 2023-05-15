@@ -64,7 +64,6 @@ class ItemRepository {
     }
   };
 
-  // [채민][repository] 판매글 작성, 수정 ==================================================
   // 판매글 생성
   setItem = async (item) => {
     return await this.itemsModel.create({

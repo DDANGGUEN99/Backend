@@ -15,7 +15,6 @@ class ItemController {
         title,
         content,
         price,
-        status,
         item_images,
       } = req.body;
 
@@ -24,7 +23,6 @@ class ItemController {
         content,
         price,
         location_id,
-        status,
         item_images}
 
       // 예외처리 / 검증 해야함 (추후)
