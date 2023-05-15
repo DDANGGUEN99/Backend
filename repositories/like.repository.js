@@ -1,8 +1,8 @@
-const { Posts, Likes } = require('../models');
+const { Items, Likes } = require('../models');
 
 class LikeRepository {
-  findlikePost = async (user_id) => {
-    const likePosts = await Posts.findAll({
+  findlikeItem = async (user_id) => {
+    const likeItems = await Items.findAll({
       order: [['createdAt', 'desc']],
       include: [
         {
@@ -13,23 +13,23 @@ class LikeRepository {
         },
       ],
     });
-    return likePosts;
+    return likeItems;
   };
 
-  findOne = async (post_id, user_id) => {
+  findOne = async (item_id, user_id) => {
     return await Likes.findOne({
-      where: { post_id, user_id },
+      where: { item_id, user_id },
       attributes: ['like_id'],
     });
   };
 
-  create = async (post_id, user_id) => {
-    await Likes.create({ post_id, user_id });
+  create = async (item_id, user_id) => {
+    await Likes.create({ item_id, user_id });
   };
 
-  destroy = async (post_id, user_id) => {
+  destroy = async (item_id, user_id) => {
     await Likes.destroy({
-      where: { post_id, user_id },
+      where: { item_id, user_id },
     });
   };
 }
