@@ -21,11 +21,17 @@ class ItemRepository {
           required: false,
         },
       ],
-      where: { location_id, status: { [Op.ne]: 'D'} },
+      where: { location_id, status: { [Op.ne]: 'D' } },
       limit,
       offset,
     });
     return items;
+  };
+
+  getItemsHS = async (page) => {
+    const limit = 10;
+    const offset = (page - 1) * limit;
+    return await this.itemsModel.findAll({ limit, offset });
   };
 
   findOne = async (item_id) => {
@@ -35,11 +41,14 @@ class ItemRepository {
   };
 
   destroy = async (itemInfo) => {
-    await this.itemsModel.update({
-      status: 'D',
-    }, {
-      where: itemInfo,
-    });
+    await this.itemsModel.update(
+      {
+        status: 'D',
+      },
+      {
+        where: itemInfo,
+      },
+    );
   };
 
   isLiked = async (findInfo) => {
@@ -55,24 +64,24 @@ class ItemRepository {
 
   // 판매글 생성
   setItem = async (item) => {
-    return await this.itemsModel.create({...item});
+    return await this.itemsModel.create({ ...item });
   };
 
   // 판매글 수정
   updateItem = async (item) => {
     const updateItemData = await this.itemsModel.update(
       {
-        ...item
+        ...item,
       },
-      { where: { item_id : item.item_id } },
+      { where: { item_id: item.item_id } },
     );
     return updateItemData;
   };
 
   // 판매글 찾기용
   getItemOne = async (item_id) => {
-    return await this.itemsModel.findOne({ where: { item_id }});
-  }
+    return await this.itemsModel.findOne({ where: { item_id } });
+  };
 
   // 판매글 status 수정
   updateStatus = async (item) => {
