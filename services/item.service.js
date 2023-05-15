@@ -13,10 +13,7 @@ class ItemService {
     const items = await this.itemRepository.findAll(findInfo);
     const itemMap = items.map((item) => {
       item.dataValues.is_liked = !(!item.Likes);
-      item.dataValues.category = getCategoryName(item.dataValues.category_id);
-      item.dataValues.location = getLocationName(item.dataValues.location_id);
-      delete item.dataValues.category_id;
-      delete item.dataValues.location_id;
+      this.itemFormating(item);
       return item; // 여기서 에러 났었음.
     });
     return itemMap;
@@ -27,11 +24,18 @@ class ItemService {
     if (!item) {
       throw new AppError(404, '판매글 조회에 실패했습니다.');
     }
+
     item.dataValues.is_liked = await this.itemRepository.isLiked(findInfo);
-    item.dataValues.category = getCategoryName(item.dataValues.category_id);
-    item.dataValues.location = getLocationName(item.dataValues.location_id);
+    this.itemFormating(item);
     return item;
   };
+
+  itemFormating = (item) => {
+    item.dataValues.category = getCategoryName(item.dataValues.category_id);
+    item.dataValues.location = getLocationName(item.dataValues.location_id);
+    delete item.dataValues.category_id;
+    delete item.dataValues.location_id;
+  }
 
   deleteItem = async (itemInfo) => {
     const item = await this.itemRepository.findOne(itemInfo.item_id);
@@ -53,7 +57,16 @@ class ItemService {
   };
 
   // 판매글 수정
-  updateItem = async (item) => {
+  updateItem = async (item, user_id) => {
+    const itemData = await this.itemRepository.findOne(item.item_id);
+
+    if (!itemData) {
+      throw new Error('존재하지 않는 게시글입니다.');
+    }
+
+    if (itemData.user_id !== user_id) {
+      throw new Error('수정 권한이 없습니다.');
+    }
     return await this.itemRepository.updateItem(item);
   };
 
