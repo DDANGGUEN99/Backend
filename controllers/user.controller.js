@@ -5,7 +5,8 @@ class UserController {
 
   // 이메일 중복검사
   checkEmail = async (req, res) => {
-    const { email } = req.body;
+    const email = req.params.email;
+    console.log(email);
 
     // email 유효성 검사
     if (!email)
@@ -23,7 +24,7 @@ class UserController {
 
   // 닉네임 중복검사
   checkNickname = async (req, res) => {
-    const { nickname } = req.body;
+    const nickname = req.params.nickname;
 
     // nickname 유효성 검사
     if (!nickname)
