@@ -43,7 +43,7 @@ class ItemService {
     await this.itemRepository.destroy(itemInfo);
   };
 
-  // [채민][service] 판매글 작성, 수정 ==================================================
+  
   // 판매글 생성
   setItem = async (item) => {
     return await this.itemRepository.setItem(item);
@@ -58,33 +58,7 @@ class ItemService {
     return await this.itemRepository.getItemOne(item_id);
   } 
 
-  // 거래글 status 수정
-  updateStatus = async (req, res) => {
-    const { user_id } = res.locals.user;
-
-    const { item_id } = req.params;
-
-    const { status } = req.body;
-
-    const findOnePost = await this.itemRepository.findOnePost(item_id);
-
-    const post = {
-      item_id,
-      user_id,
-      status,
-    };
-
-    if (!findOnePost) throw new error('존재하지 않는 판매글입니다.');
-    if (findOnePost.user_id !== user_id)
-      throw new error('수정 권한이 없습니다.');
-
-    if (status === 2) {
-      await this.itemRepository.updateStatus(post);
-      await this.itemRepository.createTransaction(item_id, user_id);
-    } else {
-      await this.itemRepository.updateStatus(post);
-    }
-  };
+  
 }
 
 module.exports = ItemService;
