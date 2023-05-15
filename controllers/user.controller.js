@@ -44,7 +44,7 @@ class UserController {
     const { email, nickname, password, location_id, user_image } = req.body;
 
     // input data 유효성 검사
-    if (!email || !nickname || !password || !location_id) {
+    if (!email || !nickname || !password) {
       return res.status(412).json({ errorMessage: '데이터 형식 비정상' });
     }
 
