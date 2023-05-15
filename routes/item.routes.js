@@ -35,10 +35,10 @@ router.post(
 // router.post('/post', authMiddleware, itemController.postItem);
 
 // GET: 게시글 전체 조회
-// router.get('/', itemController.getItems);
+router.get('/', authMiddleware, itemController.getItems);
 
 // GET: 게시글 전체 조회 (노인증 테스트)
-router.get('/', itemController.getItemsHS);
+// router.get('/', itemController.getItemsHS);
 
 // GET: 게시글 상세 조회
 router.get('/:item_id', authMiddleware, itemController.getItem);
