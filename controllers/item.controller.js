@@ -10,27 +10,26 @@ class ItemController {
   setItem = async (req, res, next) => {
     try {
       const { user_id, nickname, location_id } = res.locals.user;
-      const {
+      const { category_id, title, content, price, item_images } =
+        req.body;
+
+      const item = {
+        user_id,
+        nickname,
         category_id,
         title,
         content,
         price,
-        item_images,
-      } = req.body;
-
-      const item = {user_id, nickname, category_id,
-        title,
-        content,
-        price,
         location_id,
-        item_images}
+        item_images,
+      };
 
       // 예외처리 / 검증 해야함 (추후)
 
       await this.itemService.setItem(item);
       return res.status(200).json({ message: '판매글 작성 성공' });
     } catch (error) {
-      console.error (error);
+      console.error(error);
       // next(error, req, res, '판매글 작성 실패');
       return res.status(400).json({ message: '판매글 작성 실패' });
     }
@@ -75,7 +74,8 @@ class ItemController {
     try {
       const { item_id } = req.params;
       const { user_id, location_id } = res.locals.user;
-      const { category_id, title, content, price, status, item_images } = req.body;
+      const { category_id, title, content, price, status, item_images } =
+        req.body;
 
       const item = {
         item_id,

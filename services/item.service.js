@@ -11,12 +11,15 @@ class ItemService {
 
   getItems = async (findInfo) => {
     const items = await this.itemRepository.findAll(findInfo);
-    return items.map((item) => {
-      item.dataValues.is_liked = item.Likes.length > 0;
+    const itemMap = items.map((item) => {
+      item.dataValues.is_liked = !(!item.Likes);
       item.dataValues.category = getCategoryName(item.dataValues.category_id);
       item.dataValues.location = getLocationName(item.dataValues.location_id);
-      return items;
+      delete item.dataValues.category_id;
+      delete item.dataValues.location_id;
+      return item; // 여기서 에러 났었음.
     });
+    return itemMap;
   };
 
   getItem = async (findInfo) => {
