@@ -73,8 +73,8 @@ module.exports = async (req, res, next) => {
       );
       accesstokenValue = null;
       accesstokenValue = newAccesstokenValue;
-      res.cookie('accesstoken', `Bearer ${accesstokenValue}`);
-      res.cookie('refreshtoken', `Bearer ${refreshtokenValue}`);
+      res.setHeader('accesstoken', `Bearer ${accesstokenValue}`);
+      res.setHeader('refreshtoken', `Bearer ${refreshtokenValue}`);
     }
     console.log({
       accesstokenValue,
