@@ -6,7 +6,7 @@ class ItemController {
     this.itemService = new ItemService();
   }
 
-  // 거래글 생성
+  // 판매글 생성
   setItem = async (req, res, next) => {
     try {
       const { user_id, nickname, location_id } = res.locals.user;

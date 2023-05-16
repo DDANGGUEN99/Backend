@@ -6,9 +6,6 @@ const itemController = new ItemController();
 const multerMiddleware = require('../middlewares/multer');
 const multer = require('multer');
 
-// POST : 연습용 판매글 작성
-// router.post('/post', authMiddleware, itemController.postItem);
-
 // GET: 게시글 전체 조회
 router.get('/', authMiddleware, itemController.getItems);
 
@@ -27,6 +24,10 @@ router.post(
 );
 
 // 판매글 수정
-router.put('/:item_id', authMiddleware, itemController.updateItem);
+router.put(
+  '/:item_id', 
+  authMiddleware,
+  multerMiddleware.array('item_images', 10), 
+  itemController.updateItem);
 
 module.exports = router;
