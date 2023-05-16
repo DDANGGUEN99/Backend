@@ -1,6 +1,52 @@
 const { Items, Likes } = require('../models');
+const { Op } = require('sequelize');
 
 class LikeRepository {
+  findOne = async (item_id, user_id) => {
+    return await Likes.findOne({
+      where: { item_id, user_id },
+      attributes: ['like_id'],
+    });
+  };
+
+  updateLikeDb = async (item_id, user_id) => {
+    const existsLikes = await Likes.findOne({
+      where: {
+        [Op.and]: [{ item_id: item_id }, { user_id: user_id }],
+      },
+    });
+    if (existsLikes) {
+      await Likes.destroy({
+        where: {
+          [Op.and]: [{ item_id: item_id }, { user_id: user_id }],
+        },
+      });
+      return 'likesDestroy';
+    } else {
+      await Likes.create({
+        item_id: item_id,
+        user_id: user_id,
+      });
+      return 'likesCreate';
+    }
+  };
+
+  destroy = async (item_id, user_id) => {
+    const decrementLikes = await Posts.decrement('likes', {
+      where: { item_id, user_id },
+      attributes: ['like_id'],
+    });
+    return decrementLikes;
+  };
+
+  create = async (item_id, user_id) => {
+    const incrementLikes = await Posts.increment('likes', {
+      where: { item_id, user_id },
+      attributes: ['like_id'],
+    });
+    return incrementLikes;
+  };
+
   findlikeItem = async (user_id) => {
     const likeItems = await Items.findAll({
       order: [['createdAt', 'desc']],
@@ -14,23 +60,6 @@ class LikeRepository {
       ],
     });
     return likeItems;
-  };
-
-  findOne = async (item_id, user_id) => {
-    return await Likes.findOne({
-      where: { item_id, user_id },
-      attributes: ['like_id'],
-    });
-  };
-
-  create = async (item_id, user_id) => {
-    await Likes.create({ item_id, user_id });
-  };
-
-  destroy = async (item_id, user_id) => {
-    await Likes.destroy({
-      where: { item_id, user_id },
-    });
   };
 }
 
