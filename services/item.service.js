@@ -1,13 +1,15 @@
 require('dotenv').config();
 const ItemRepository = require('../repositories/item.repository');
 const AppError = require('../utils/appError');
-const { Items } = require('../models');
+const { Items, Users } = require('../models');
 const { sequelize } = require('../models');
 const getCategoryName = require('../utils/catetory.util');
 const getLocationName = require('../utils/location.util');
+const UserRepository = require('../repositories/user.repository');
 
 class ItemService {
   itemRepository = new ItemRepository(Items);
+  userRepository = new UserRepository(Users);
 
   getItems = async (findInfo) => {
     const items = await this.itemRepository.findAll(findInfo);
@@ -36,7 +38,13 @@ class ItemService {
       throw new AppError(404, '판매글 조회에 실패했습니다.');
     }
 
+    if (item.status === 'D') {
+      throw new AppError(404, '삭제된 판매글입니다.');
+    }
+
     item.dataValues.is_liked = await this.itemRepository.isLiked(findInfo);
+    const user = await this.userRepository.getProfile(findInfo.user_id);
+    item.dataValues.profile_url = user.user_image;
     this.itemFormating(item);
     return item;
   };
