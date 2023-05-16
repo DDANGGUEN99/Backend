@@ -18,10 +18,10 @@ class ItemService {
       user_id,
     );
     if (updatedlike == 'likesCreate') {
-      await this.likeRepository.destroy(item_id, user_id);
+      await this.likeRepository.create(item_id, user_id);
       return '내 관심목록에 등록되었습니다';
     } else {
-      await this.likeRepository.create(item_id, user_id);
+      await this.likeRepository.destroy(item_id, user_id);
       return '내 관심목록에서 삭제되었습니다';
     }
   };

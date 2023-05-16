@@ -5,8 +5,6 @@ const ItemController = require('../controllers/item.controller');
 const itemController = new ItemController();
 const multerMiddleware = require('../middlewares/multer');
 const multer = require('multer');
-const uploadPostPhoto = require('../modules/s3.js'); // 단일 이미지 저장
-const uploadImages = require('../modules/s3.js'); // 다중 이미지 저장
 
 // 단일 이미지 test
 // router.post(
@@ -16,7 +14,7 @@ const uploadImages = require('../modules/s3.js'); // 다중 이미지 저장
 // );
 
 //다중이미지 test
-router.post('/upload', uploadImages, itemController.getItems);
+// router.post('/upload', uploadImages, itemController.getItems);
 
 // POST : 연습용 판매글 작성
 // router.post('/post', authMiddleware, itemController.postItem);

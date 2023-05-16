@@ -31,17 +31,19 @@ class LikeRepository {
     }
   };
 
-  destroy = async (item_id, user_id) => {
+  destroy = async (item_id) => {
     const decrementLikes = await Items.decrement('likes', {
-      where: { item_id, user_id },
+      by: 1,
+      where: { item_id },
       attributes: ['like_id'],
     });
     return decrementLikes;
   };
 
-  create = async (item_id, user_id) => {
+  create = async (item_id) => {
     const incrementLikes = await Items.increment('likes', {
-      where: { item_id, user_id },
+      by: 1, // 값을 하나씩만 이동시킨다
+      where: { item_id },
       attributes: ['like_id'],
     });
     return incrementLikes;
@@ -55,7 +57,7 @@ class LikeRepository {
           model: Likes,
           where: { user_id },
           attributes: [],
-          required: false,
+          // required: false,
         },
       ],
     });
