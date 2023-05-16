@@ -13,7 +13,23 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'user_id',
         foreignKey: 'user_id',
       });
+
       this.hasMany(models.Likes, {
+        sourceKey: 'user_id',
+        foreignKey: 'user_id',
+      });
+
+      this.hasMany(models.ChatRooms, {
+        sourceKey: 'user_id',
+        foreignKey: 'seller_id',
+      });
+
+      this.hasMany(models.ChatRooms, {
+        sourceKey: 'user_id',
+        foreignKey: 'buyer_id',
+      });
+
+      this.hasMany(models.Chats, {
         sourceKey: 'user_id',
         foreignKey: 'user_id',
       });

@@ -2,59 +2,51 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Items', {
-      item_id: {
+    await queryInterface.createTable('ChatRooms', {
+      room_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
-      user_id: {
+      item_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Items',
+          key: 'item_id',
+        },
+      },
+      seller_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
           key: 'user_id',
         },
-        onDelete: 'CASCADE',
       },
-      nickname: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      category_id: {
+      buyer_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'user_id',
+        },
       },
-      title: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      content: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      price: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-      },
-      location_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-      },
-      status: {
+      status: { // N - 정상, D - 삭제됨
         allowNull: false,
         type: Sequelize.CHAR(1),
         defaultValue: 'N',
       },
-      likes: {
+      sale_status: { // N - 정상, C - 판매완료
         allowNull: false,
-        defaultValue: 0,
-        type: Sequelize.INTEGER,
+        type: Sequelize.CHAR(1),
+        defaultValue: 'N',
       },
-      item_images: {
-        allowNull: true,
-        type: Sequelize.STRING,
+      purchase_status: { // N - 정상, C - 구매 완료
+        allowNull: false,
+        type: Sequelize.CHAR(1),
+        defaultValue: 'N',
       },
       createdAt: {
         allowNull: false,
@@ -65,10 +57,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.fn('now'),
-      },
+      }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Items');
-  },
+    await queryInterface.dropTable('ChatRooms');
+  }
 };

@@ -10,7 +10,10 @@ class ItemController {
   setItem = async (req, res, next) => {
     try {
       const { user_id, nickname, location_id } = res.locals.user;
-      const { category_id, title, content, price, item_images } = req.body;
+      const { category_id, title, content, price } = req.body;
+      // const item_images = req.files.map(file => file.originalname);
+      const item_images = req.img_url.toString();
+      console.log(item_images);
 
       const item = {
         user_id,
@@ -22,6 +25,8 @@ class ItemController {
         location_id,
         item_images,
       };
+
+      console.log('item_images', item_images);
 
       // 예외처리 / 검증 해야함 (추후)
 
