@@ -8,21 +8,22 @@ const redisClientRepository = new RedisClientRepository(redis);
 // 사용자 인증 미들웨어 - Redis 방식
 module.exports = async (req, res, next) => {
   try {
-    const { accesstoken, refreshtoken } = req.headers;
+    // const { accesstoken, refreshtoken } = req.headers;
     // const { accesstoken, refreshtoken } = req.cookies;
 
-    // let accesstoken;
-    // let refreshtoken;
-    // if (req.cookies.refreshtoken) {
-    //   accesstoken = req.cookies.accesstoken;
-    //   refreshtoken = req.cookies.refreshtoken;
-    // } else if (req.headers.refreshtoken) {
-    //   accesstoken = req.headers.accesstoken;
-    //   refreshtoken = req.headers.refreshtoken;
-    // } else {
-    //   accesstoken = null;
-    //   refreshtoken = null;
-    // }
+    let accesstoken;
+    let refreshtoken;
+
+    if (req.cookies.refreshtoken) {
+      accesstoken = req.cookies.accesstoken;
+      refreshtoken = req.cookies.refreshtoken;
+    } else if (req.headers.refreshtoken) {
+      accesstoken = req.headers.accesstoken;
+      refreshtoken = req.headers.refreshtoken;
+    } else {
+      accesstoken = null;
+      refreshtoken = null;
+    }
 
     // 쿠키 존재 유무 체크 : (falsy) 쿠키 토큰이 존재하지 않습니다.
     const isaccesstoken = accesstoken ? true : false;

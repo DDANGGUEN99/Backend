@@ -124,18 +124,18 @@ class UserController {
 
   // 로그아웃
   logout = async (req, res) => {
-    const { refreshtoken } = req.headers;
+    // const { refreshtoken } = req.headers;
     // const { refreshtoken } = req.cookies;
 
-    // let refreshtoken;
+    let refreshtoken;
 
-    // if (req.cookies.refreshtoken) {
-    //   refreshtoken = req.cookies.refreshtoken;
-    // } else if (req.headers.refreshtoken) {
-    //   refreshtoken = req.headers.refreshtoken;
-    // } else {
-    //   refreshtoken = null;
-    // }
+    if (req.cookies.refreshtoken) {
+      refreshtoken = req.cookies.refreshtoken;
+    } else if (req.headers.refreshtoken) {
+      refreshtoken = req.headers.refreshtoken;
+    } else {
+      refreshtoken = null;
+    }
 
     const [tokenType, tokenValue] = refreshtoken.split(' ');
     res.clearCookie();
