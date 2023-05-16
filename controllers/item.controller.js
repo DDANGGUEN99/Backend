@@ -52,16 +52,6 @@ class ItemController {
     }
   };
 
-  getItemsHS = async (req, res, next) => {
-    const page = Number(req.query.page);
-    const getItemsData = await this.itemService.getItemsHS(page);
-    if (getItemsData) {
-      return res.status(200).json({ itemsData: getItemsData });
-    } else {
-      return res.status(400).send('판매글 조회 실패');
-    }
-  };
-
   getItem = async (req, res, next) => {
     try {
       const { item_id } = req.params;

@@ -29,12 +29,6 @@ class ItemRepository {
     return items;
   };
 
-  getItemsHS = async (page) => {
-    const limit = 10;
-    const offset = (page - 1) * limit;
-    return await this.itemsModel.findAll({ limit, offset });
-  };
-
   findOne = async (item_id) => {
     return await this.itemsModel.findOne({
       where: { item_id },
