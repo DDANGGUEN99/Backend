@@ -37,7 +37,10 @@ const uploadImage = multer({
         return callback(new Error('확장자 에러'));
       }
       const photo_ip = `https://ddanggeun9.s3.ap-northeast-2.amazonaws.com/folder/${date}_${randomNumber}`;
-      req.photo_ip = photo_ip;
+      if (!req.img_url) {
+        req.img_url = [];
+      }
+      req.img_url.push(photo_ip);
 
       callback(null, `folder/${date}_${randomNumber}`);
     },

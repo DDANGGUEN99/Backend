@@ -37,6 +37,7 @@
     "path": "^0.12.7",
     "redis": "^4.6.6",
     "sequelize": "^6.31.1",
+    "socket.io": "^4.6.1",
     "swagger-autogen": "^2.23.1",
     "swagger-ui-express": "^4.6.3"
   },
