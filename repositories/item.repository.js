@@ -13,6 +13,7 @@ class ItemRepository {
     const limit = 10;
     const offset = (page - 1) * limit;
     const items = await this.itemsModel.findAll({
+      order: [['item_id', 'DESC']],
       include: [
         {
           model: Likes,
@@ -26,12 +27,6 @@ class ItemRepository {
       offset,
     });
     return items;
-  };
-
-  getItemsHS = async (page) => {
-    const limit = 10;
-    const offset = (page - 1) * limit;
-    return await this.itemsModel.findAll({ limit, offset });
   };
 
   findOne = async (item_id) => {

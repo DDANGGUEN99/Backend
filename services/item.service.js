@@ -13,8 +13,19 @@ class ItemService {
     const items = await this.itemRepository.findAll(findInfo);
     const itemMap = items.map((item) => {
       item.dataValues.is_liked = !!item.Likes;
+      if (!item.dataValues.item_images) {
+        console.log('이미지 null 일 때');
+        item.dataValues.thumbnail_url = null;
+      } else {
+        console.log('이미지 있을 때');
+        item.dataValues.thumbnail_url = item.dataValues.item_images.split(
+          ',',
+          2,
+        )[0];
+      }
+      delete item.dataValues.item_images;
       this.itemFormating(item);
-      return item; // 여기서 에러 났었음.
+      return item;
     });
     return itemMap;
   };
@@ -28,14 +39,6 @@ class ItemService {
     item.dataValues.is_liked = await this.itemRepository.isLiked(findInfo);
     this.itemFormating(item);
     return item;
-  };
-
-  getItemsHS = async (page) => {
-    try {
-      return await this.itemRepository.getItemsHS(page);
-    } catch (err) {
-      console.error(err);
-    }
   };
 
   itemFormating = (item) => {

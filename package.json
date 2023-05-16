@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/meadd231/DDANGGUEN99-Backend#readme",
   "dependencies": {
-    "aws-sdk": "^2.1377.0",
+    "@aws-sdk/client-s3": "^3.332.0",
+    "aws-sdk": "^2.1378.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
