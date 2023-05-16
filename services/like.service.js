@@ -14,7 +14,7 @@ class ItemService {
 
     const like = await this.likeRepository.findOne(item_id, user_id);
     if (like) {
-      await this.likeRepository.destroy(item_id, user_id);
+      await this.likeRepository.destroy(like.like_id);
       return '내 관심목록에서 삭제되었습니다.';
     } else {
       await this.likeRepository.create(item_id, user_id);
