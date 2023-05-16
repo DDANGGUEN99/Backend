@@ -44,9 +44,8 @@ const uploadImage = multer({
     acl: 'public-read',
   }),
   limits: {
-    //postImgUrl
     fileSize: 25 * 1024 * 1024,
   },
-}).array('photos', 5);
+}).array('photos', 10);
 
 module.exports = uploadImage;

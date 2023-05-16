@@ -3,7 +3,7 @@ const LikeService = require('../services/like.service');
 class LikesController {
   likeService = new LikeService();
 
-  putlike = async (req, res) => {
+  putlike = async (req, res, next) => {
     try {
       const { user_id } = res.locals.user;
       const { item_id } = req.params;
@@ -12,23 +12,17 @@ class LikesController {
 
       res.status(200).json({ message: like });
     } catch (error) {
-      return res
-        .status(400)
-        .json({ message: '관심목록 등록에 실패하였습니다.' });
-      // errorHandling(error, req, res, '관심목록 등록에 실패하였습니다.');
+      next(error, req, res, '관심목록 등록에 실패하였습니다.');
     }
   };
 
-  getlikeItem = async (req, res) => {
+  getlikeItem = async (req, res, next) => {
     try {
       const { user_id } = res.locals.user;
       const items = await this.likeService.getlikeItem(user_id);
       return res.status(200).json({ items });
     } catch (error) {
-      return res
-        .status(400)
-        .json({ message: '관심목록 조회에 실패하였습니다.' });
-      // errorHandling(error, req, res, '관심목록 조회에 실패하였습니다.');
+      next(error, req, res, '관심목록 조회에 실패하였습니다.');
     }
   };
 }
