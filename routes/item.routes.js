@@ -6,16 +6,6 @@ const itemController = new ItemController();
 const multerMiddleware = require('../middlewares/multer');
 const multer = require('multer');
 
-// 단일 이미지 test
-// router.post(
-//   '/upload',
-//   uploadPostPhoto.single('postImgUrl'),
-//   itemController.getItems,
-// );
-
-//다중이미지 test
-// router.post('/upload', uploadImages, itemController.getItems);
-
 // POST : 연습용 판매글 작성
 // router.post('/post', authMiddleware, itemController.postItem);
 

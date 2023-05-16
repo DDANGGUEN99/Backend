@@ -1,9 +1,17 @@
 const redis = require('redis');
 const jwt = require('../utils/jwt.js');
 const { Users } = require('../models');
+const AppError = require('../utils/appError');
 const UserRepository = require('../repositories/user.repository');
 const RedisClientRepository = require('../repositories/redis.repository.js');
 const getLocationName = require('../utils/location.util.js');
+
+const nodemailer = require('nodemailer');
+const ejs = require('ejs');
+const path = require('path');
+
+require('dotenv').config();
+var appDir = path.dirname(require.main.filename);
 
 class UserService {
   userRepository = new UserRepository(Users);
@@ -73,6 +81,67 @@ class UserService {
     }
   };
 
+  // 이메일 인증
+  senduserMail = async (mail, userNum) => {
+    try {
+      let emailTemplete = await new Promise((resolve, reject) => {
+        // 이메일 템플릿 파일 렌더링
+        ejs.renderFile(
+          appDir + '/utils/mail.ejs', // 경로생성
+          { userCode: userNum }, // 생성 번호 전달
+          function (err, data) {
+            if (err) {
+              reject(err);
+            }
+            resolve(data);
+          },
+        );
+      });
+
+      // 이메일 전송 객체 생성
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // TLS 암호화사용 off
+        auth: {
+          user: process.env.NODEMAILER_USER,
+          pass: process.env.NODEMAILER_PASS,
+        },
+        // tls: {
+        //   rejectUnauthorized: false,
+        // },
+      });
+
+      // 이메일 전송
+      let mailOptions = {
+        from: `ddanggeun99 <${process.env.NODEMAILER_USER}>`, // 당근99 의심
+        to: mail,
+        subject: '인증번호를 입력해주세요.', // email 제목
+        html: emailTemplete,
+      };
+
+      // 전송결과
+      await new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.error(error);
+            reject(error);
+          } else {
+            console.log('이메일 전송 성공');
+            transporter.close();
+            resolve();
+          }
+        });
+      });
+    } catch (error) {
+      console.error(error);
+      throw new AppError(500, '이메일 전송 중 오류가 발생하였습니다.');
+    }
+    return '이메일 전송 완료';
+  };
+
+  // 로그아웃
   logout = async (refreshtoken) => {
     try {
       await this.redisClientRepository.delData(refreshtoken);

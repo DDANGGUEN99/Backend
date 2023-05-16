@@ -6,6 +6,9 @@ const UserController = require('../controllers/user.controller.js');
 
 const userController = new UserController();
 
+// 회원가입 인증 이메일 발송 기능
+router.post('/mail', userController.userMail);
+
 // 이메일 중복검사
 router.get('/checkEmail', userController.checkEmail);
 

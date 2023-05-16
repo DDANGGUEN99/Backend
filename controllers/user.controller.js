@@ -1,4 +1,5 @@
 const UserService = require('../services/user.service');
+const AppError = require('../utils/appError');
 
 class UserController {
   userService = new UserService();
@@ -106,6 +107,19 @@ class UserController {
     res.cookie('refreshtoken', `Bearer ${refreshtoken}`);
 
     return res.status(200).json({ accesstoken, refreshtoken, userData });
+  };
+
+  // 이메일 인증
+  userMail = async (req, res, next) => {
+    try {
+      const { email } = req.body;
+      let userNum = Math.random().toString().substring(2, 8);
+      const MailWithNum = await this.userService.senduserMail(email, userNum);
+      console.log(MailWithNum);
+      res.status(200).json({ userNum: userNum });
+    } catch (error) {
+      throw new AppError(404, '알수없는 이유로 오류가 발생하였습니다.');
+    }
   };
 
   // 로그아웃
