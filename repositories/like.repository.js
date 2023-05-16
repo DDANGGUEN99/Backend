@@ -9,7 +9,7 @@ class LikeRepository {
     });
   };
 
-  updateLikeDb = async (item_id, user_id) => {
+  updatelikedb = async (item_id, user_id) => {
     const existsLikes = await Likes.findOne({
       where: {
         [Op.and]: [{ item_id: item_id }, { user_id: user_id }],
@@ -32,7 +32,7 @@ class LikeRepository {
   };
 
   destroy = async (item_id, user_id) => {
-    const decrementLikes = await Posts.decrement('likes', {
+    const decrementLikes = await Items.decrement('likes', {
       where: { item_id, user_id },
       attributes: ['like_id'],
     });
@@ -40,7 +40,7 @@ class LikeRepository {
   };
 
   create = async (item_id, user_id) => {
-    const incrementLikes = await Posts.increment('likes', {
+    const incrementLikes = await Items.increment('likes', {
       where: { item_id, user_id },
       attributes: ['like_id'],
     });

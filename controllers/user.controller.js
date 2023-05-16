@@ -110,8 +110,8 @@ class UserController {
 
   // 로그아웃
   logout = async (req, res) => {
-    const { refreshtoken } = req.headers;
-    // const { refreshtoken } = req.cookies;
+    // const { refreshtoken } = req.headers;
+    const { refreshtoken } = req.cookies;
 
     const [tokenType, tokenValue] = refreshtoken.split(' ');
     res.clearCookie();

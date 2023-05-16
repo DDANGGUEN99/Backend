@@ -1,10 +1,11 @@
 const LikeRepository = require('../repositories/like.repository');
 const ItemRepository = require('../repositories/item.repository');
+const { Items } = require('../models');
 const AppError = require('../utils/appError');
 
 class ItemService {
   likeRepository = new LikeRepository();
-  itemRepository = new ItemRepository();
+  itemRepository = new ItemRepository(Items);
 
   putlike = async (item_id, user_id) => {
     const item = await this.itemRepository.findOne(item_id);
@@ -17,10 +18,10 @@ class ItemService {
       user_id,
     );
     if (updatedlike == 'likesCreate') {
-      await this.likeRepository.destroy(item_id);
+      await this.likeRepository.destroy(item_id, user_id);
       return '내 관심목록에 등록되었습니다';
     } else {
-      await this.likeRepository.create(item_id);
+      await this.likeRepository.create(item_id, user_id);
       return '내 관심목록에서 삭제되었습니다';
     }
   };
