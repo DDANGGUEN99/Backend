@@ -39,6 +39,7 @@
 
 - RDS : 김채민 RDS
 - REDIS : 김현수 REDIS
+- S3 : 정혜승 S3
 
 # Branch
 
