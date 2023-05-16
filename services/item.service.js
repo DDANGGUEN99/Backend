@@ -12,7 +12,7 @@ class ItemService {
   getItems = async (findInfo) => {
     const items = await this.itemRepository.findAll(findInfo);
     const itemMap = items.map((item) => {
-      item.dataValues.is_liked = !(!item.Likes);
+      item.dataValues.is_liked = !!item.Likes;
       this.itemFormating(item);
       return item; // 여기서 에러 났었음.
     });
@@ -30,12 +30,20 @@ class ItemService {
     return item;
   };
 
+  getItemsHS = async (page) => {
+    try {
+      return await this.itemRepository.getItemsHS(page);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   itemFormating = (item) => {
     item.dataValues.category = getCategoryName(item.dataValues.category_id);
     item.dataValues.location = getLocationName(item.dataValues.location_id);
     delete item.dataValues.category_id;
     delete item.dataValues.location_id;
-  }
+  };
 
   deleteItem = async (itemInfo) => {
     const item = await this.itemRepository.findOne(itemInfo.item_id);
@@ -50,7 +58,6 @@ class ItemService {
     await this.itemRepository.destroy(itemInfo);
   };
 
-  
   // 판매글 생성
   setItem = async (item) => {
     return await this.itemRepository.setItem(item);
@@ -72,9 +79,7 @@ class ItemService {
 
   getItemOne = async (item_id) => {
     return await this.itemRepository.getItemOne(item_id);
-  } 
-
-  
+  };
 }
 
 module.exports = ItemService;
