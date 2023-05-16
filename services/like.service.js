@@ -13,7 +13,7 @@ class ItemService {
       throw new AppError(404, '판매글이 존재하지 않습니다.');
     }
 
-    const updatedlike = await this.likeRepository.updatelikedb(
+    const updatedlike = await this.likeRepository.updateLikeDb(
       item_id,
       user_id,
     );
