@@ -10,7 +10,7 @@ class RedisClientRepository {
       url: `redis://${process.env.REDIS_USERNAME}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/0`,
       legacyMode: true,
     });
-    this.redisConnected = false;
+    // this.redisConnected = false;
   }
 
   initialize = async () => {
@@ -40,6 +40,7 @@ class RedisClientRepository {
   delData = async (key) => {
     await this.initialize();
     await this.redisClient.v4.del(key);
+    return 1;
   };
 }
 

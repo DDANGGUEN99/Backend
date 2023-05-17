@@ -148,20 +148,28 @@ class UserController {
     // const { refreshtoken } = req.headers;
     // const { refreshtoken } = req.cookies;
 
+    let accesstoken;
     let refreshtoken;
 
     if (req.cookies.refreshtoken) {
+      accesstoken = req.cookies.accesstoken;
       refreshtoken = req.cookies.refreshtoken;
     } else if (req.headers.refreshtoken) {
+      accesstoken = req.headers.accesstoken;
       refreshtoken = req.headers.refreshtoken;
     } else {
+      accesstoken = null;
       refreshtoken = null;
     }
 
     const [tokenType, tokenValue] = refreshtoken.split(' ');
     res.clearCookie();
-    await this.userService.logout(tokenValue);
-    return res.status(200).end();
+    const result = await this.userService.logout(tokenValue);
+    if (result) {
+      return res.status(200).end();
+    } else {
+      return res.status(400).end();
+    }
   };
 
   // 로그인 검증 - 테스트용

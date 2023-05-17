@@ -2,56 +2,30 @@ const { Items, Likes } = require('../models');
 const { Op } = require('sequelize');
 
 class LikeRepository {
-  findOne = async (item_id, user_id) => {
+  
+  // 관심목록 조회
+  getLikeOne = async (item_id, user_id) => {
     return await Likes.findOne({
       where: { item_id, user_id },
-      attributes: ['like_id'],
-    });
-  };
+    })
+  }
+  
+  // 관심목록 추가
+  addLike = async (item_id, user_id) => {
+    return await Likes.create({item_id, user_id})
+  }
 
-  updatelikedb = async (item_id, user_id) => {
-    const existsLikes = await Likes.findOne({
-      where: {
-        [Op.and]: [{ item_id: item_id }, { user_id: user_id }],
-      },
-    });
-    if (existsLikes) {
-      await Likes.destroy({
-        where: {
-          [Op.and]: [{ item_id: item_id }, { user_id: user_id }],
-        },
-      });
-      return 'likesDestroy';
-    } else {
-      await Likes.create({
-        item_id: item_id,
-        user_id: user_id,
-      });
-      return 'likesCreate';
-    }
-  };
+  // 관심목록 제거
+  delLike = async (item_id, user_id) => {
+    return await Likes.destroy({
+      where: {item_id, user_id}
+    })
+  }
 
-  destroy = async (item_id) => {
-    const decrementLikes = await Items.decrement('likes', {
-      by: 1,
-      where: { item_id },
-      attributes: ['like_id'],
-    });
-    return decrementLikes;
-  };
-
-  create = async (item_id) => {
-    const incrementLikes = await Items.increment('likes', {
-      by: 1, // 값을 하나씩만 이동시킨다
-      where: { item_id },
-      attributes: ['like_id'],
-    });
-    return incrementLikes;
-  };
-
+  // 관심목록 전체조회
   findlikeItem = async (user_id) => {
     const likeItems = await Items.findAll({
-      order: [[Likes, 'createdAt', 'desc']], // like 순서대로 가져오기
+      order: [['createdAt', 'desc']], // like 순서대로 가져오기
       include: [
         {
           model: Likes,

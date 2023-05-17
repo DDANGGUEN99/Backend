@@ -1,5 +1,5 @@
-const LikeRepository = require('../repositories/like.repository');
-const ItemRepository = require('../repositories/item.repository');
+const LikeRepository = require('../repositories/like.repository.js');
+const ItemRepository = require('../repositories/item.repository.js');
 const { Items } = require('../models');
 const AppError = require('../utils/appError');
 
@@ -8,21 +8,22 @@ class ItemService {
   itemRepository = new ItemRepository(Items);
 
   putlike = async (item_id, user_id) => {
-    const item = await this.itemRepository.findOne(item_id);
-    if (!item) {
-      throw new AppError(404, '판매글이 존재하지 않습니다.');
-    }
-
-    const updatedlike = await this.likeRepository.updateLikeDb(
-      item_id,
-      user_id,
-    );
-    if (updatedlike == 'likesCreate') {
-      await this.likeRepository.create(item_id);
-      return '내 관심목록에 등록되었습니다';
-    } else {
-      await this.likeRepository.destroy(item_id);
-      return '내 관심목록에서 삭제되었습니다';
+    try {
+      // 관심목록 DB에 이미 등록되었는지 체크
+      const getLike = await this.likeRepository.getLikeOne(item_id, user_id);
+      if (!getLike) {
+        // 없으면 추가
+        await this.likeRepository.addLike(item_id, user_id);  // 관심목록 추가
+        await this.itemRepository.plusLikes(item_id);  // 판매글 Likes +1
+        return true;
+      } else {
+        // 있으면 제거
+        await this.likeRepository.delLike(item_id, user_id);  // 관심목록 제거
+        await this.itemRepository.minusLikes(item_id);  // 판매글 Likes -1
+        return false;
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 

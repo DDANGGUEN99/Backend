@@ -63,21 +63,13 @@ class ItemController {
       const findInfo = { item_id, user_id };
       const item = await this.itemService.getItem(findInfo);
       const myItems = await this.itemService.getMyItems(findInfo);
-      res.status(200).json({ item, myItems });
+      if (!myItems) {
+        res.status(400).json({ message: "판매글 없음"})
+      } else {
+        res.status(200).json({ item, myItems });
+      }
     } catch (error) {
       next(error, req, res, '판매글 조회에 실패하였습니다.');
-    }
-  };
-
-  // 판매글 삭제상태로 수정
-  deleteItem = async (req, res, next) => {
-    try {
-      const { item_id } = req.params;
-      const user_id = res.locals.user;
-      const itemInfo = { item_id, user_id };
-      await this.itemService.deleteItem(itemInfo);
-    } catch (error) {
-      next(error, req, res, '판매글 삭제에 실패하였습니다.');
     }
   };
 
@@ -123,18 +115,16 @@ class ItemController {
     }
   };
 
-  // 판매글 상태값 수정 (현재 미사용)
-  updateStatus = async (req, res, next) => {
-    try {
-      const { item_id } = req.params;
-      const { status } = req.body;
-      await this.itemService.updateStatus(item_id, status);
-      res.status(200).json({
-        success: true,
-        message: '상태가 변경되었습니다.',
-      });
-    } catch (error) {
-      next(error, req, res, '상태 변경에 실패하였습니다.');
+  // 판매글전용 이미지 업로더
+  imgUpload = async (req, res, next) => {
+    let user_image;
+    if (req.img_url) {
+      user_image = req.img_url.toString();
+      const user_image_array = user_image.split(',');
+      return res.status(200).json({imageData: user_image_array});
+    } else {
+      user_image = null;
+      return res.status(400).send('이미지 업로드 실패');
     }
   };
 }

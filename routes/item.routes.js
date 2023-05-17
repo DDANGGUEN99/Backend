@@ -12,9 +12,6 @@ router.get('/', authMiddleware, itemController.getItems);
 // GET: 게시글 상세 조회
 router.get('/:item_id', authMiddleware, itemController.getItem);
 
-// DELETE: 판매글 삭제
-router.delete('/:item_id', authMiddleware, itemController.deleteItem);
-
 // 판매글 생성
 router.post(
   '/',
@@ -27,5 +24,8 @@ router.put(
   '/:item_id', 
   authMiddleware,
   itemController.updateItem);
+
+// 판매글용 이미지 업로더
+router.post('/imgUpload', authMiddleware, multerMiddleware.array('item_images', 10), itemController.imgUpload);
 
 module.exports = router;
