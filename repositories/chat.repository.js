@@ -1,9 +1,13 @@
-const { ChatRooms, Chats, Items, Users, sequelize } = require('../models');
+const { ChatRooms, Chats, Items, Users, ChatDetails } = require('../models');
 const { Op } = require('sequelize');
 
 class ChatRepository {
   create = async (chatRoomInfo) => {
-    await ChatRooms.create(chatRoomInfo);
+    const chatRoom = await ChatRooms.create(chatRoomInfo);
+    console.log(chatRoom);
+    // chatDetail 생성
+    await ChatDetails.create(chatRoomInfo.buyer_id, chatRoom.dataValues.room_id);
+    await ChatDetails.create(chatRoomInfo.seller_id, chatRoom.dataValues.room_id);
   };
 
   // 안 읽은 채팅 개수를 어떻게 구현하지? 일단 스킵 할까?
