@@ -13,105 +13,128 @@ class ItemService {
 
   // 판매글 전체 조회
   getItems = async (findInfo) => {
-    const items = await this.itemRepository.findAll(findInfo);
-    const itemMap = items.map((item) => {
-      item.dataValues.is_liked = !!item.Likes;
-      if (!item.dataValues.item_images) {
-        // console.log('이미지 null 일 때');
-        item.dataValues.thumbnail_url = null;
-      } else {
-        // console.log('이미지 있을 때');
-        item.dataValues.thumbnail_url = item.dataValues.item_images.split(
-          ',',
-          2,
-        )[0];
-      }
-      delete item.dataValues.item_images;
-      this.itemFormating(item);
-      return item;
-    });
-    return itemMap;
+    try {
+      const items = await this.itemRepository.findAll(findInfo);
+      const itemMap = items.map((item) => {
+        item.dataValues.is_liked = !!item.Likes;
+        if (!item.dataValues.item_images) {
+          // console.log('이미지 null 일 때');
+          item.dataValues.thumbnail_url = null;
+        } else {
+          // console.log('이미지 있을 때');
+          item.dataValues.thumbnail_url = item.dataValues.item_images.split(
+            ',',
+            2,
+          )[0];
+        }
+        delete item.dataValues.item_images;
+        this.itemFormating(item);
+        return item;
+      });
+      return itemMap;
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // 내 판매글 조회
   getMyItems = async (findInfo) => {
-    const items = await this.itemRepository.getMyItems(findInfo);
-    const itemMap = items.map((item) => {
-      item.dataValues.is_liked = !!item.Likes;
-      if (!item.dataValues.item_images) {
-        // console.log('이미지 null 일 때');
-        item.dataValues.thumbnail_url = null;
-      } else {
-        // console.log('이미지 있을 때');
-        item.dataValues.thumbnail_url = item.dataValues.item_images.split(
-          ',',
-          2,
-        )[0];
-      }
-      delete item.dataValues.item_images;
-      this.itemFormating(item);
-      return item;
-    });
-    return itemMap;
-  }
+    try {
+      const items = await this.itemRepository.getMyItems(findInfo);
+      const itemMap = items.map((item) => {
+        item.dataValues.is_liked = !!item.Likes;
+        if (!item.dataValues.item_images) {
+          // console.log('이미지 null 일 때');
+          item.dataValues.thumbnail_url = null;
+        } else {
+          // console.log('이미지 있을 때');
+          item.dataValues.thumbnail_url = item.dataValues.item_images.split(
+            ',',
+            2,
+          )[0];
+        }
+        delete item.dataValues.item_images;
+        this.itemFormating(item);
+        return item;
+      });
+      return itemMap;
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // 판매글 상세 조회
   getItem = async (findInfo) => {
-    const item = await this.itemRepository.findOne(findInfo.item_id);
-    if (!item) {
-      throw new AppError(404, '판매글 조회에 실패했습니다.');
-    }
+    try {
+      const item = await this.itemRepository.findOne(findInfo.item_id);
+      if (!item) {
+        return null;
+      }
 
-    if (item.status === 'D') {
-      throw new AppError(404, '삭제된 판매글입니다.');
+      item.dataValues.is_liked = await this.itemRepository.isLiked(findInfo);
+      const user = await this.userRepository.getProfile(findInfo.user_id);
+      item.dataValues.profile_url = user.user_image;
+      this.itemFormating(item);
+      return item;
+    } catch (err) {
+      console.error(err);
     }
-
-    item.dataValues.is_liked = await this.itemRepository.isLiked(findInfo);
-    const user = await this.userRepository.getProfile(findInfo.user_id);
-    item.dataValues.profile_url = user.user_image;
-    this.itemFormating(item);
-    return item;
   };
-
 
   itemFormating = (item) => {
-    item.dataValues.category = getCategoryName(item.dataValues.category_id);
-    item.dataValues.location = getLocationName(item.dataValues.location_id);
-    delete item.dataValues.category_id;
-    delete item.dataValues.location_id;
+    try {
+      item.dataValues.category = getCategoryName(item.dataValues.category_id);
+      item.dataValues.location = getLocationName(item.dataValues.location_id);
+      delete item.dataValues.category_id;
+      delete item.dataValues.location_id;
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-
   deleteItem = async (itemInfo) => {
-    const item = await this.itemRepository.findOne(itemInfo.item_id);
-    if (!item) {
-      throw new AppError(404, '판매글 조회에 실패했습니다.');
-    }
+    try {
+      const item = await this.itemRepository.findOne(itemInfo.item_id);
+      if (!item) {
+        throw new AppError(404, '판매글 조회에 실패했습니다.');
+      }
 
-    if (item.user_id != itemInfo.user_id) {
-      throw new AppError(403, '게시글의 삭제 권한이 존재하지 않습니다.');
-    }
+      if (item.user_id != itemInfo.user_id) {
+        throw new AppError(403, '게시글의 삭제 권한이 존재하지 않습니다.');
+      }
 
-    await this.itemRepository.destroy(itemInfo);
+      await this.itemRepository.destroy(itemInfo);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // 판매글 생성
   setItem = async (item) => {
-    return await this.itemRepository.setItem(item);
+    try {
+      return await this.itemRepository.setItem(item);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // 판매글 수정
   updateItem = async (item) => {
-    const itemData = await this.itemRepository.findOne(item.item_id);
+    try {
+      const itemData = await this.itemRepository.findOne(item.item_id);
 
-    if (!itemData) {
-      throw new Error('존재하지 않는 게시글입니다.');
-    }
+      if (!itemData) {
+        throw new Error('존재하지 않는 게시글입니다.');
+      }
 
-    if (itemData.user_id !== item.user_id) {
-      throw new Error('수정 권한이 없습니다.');
+      if (itemData.user_id !== item.user_id) {
+        throw new Error('수정 권한이 없습니다.');
+      }
+      
+      return await this.itemRepository.updateItem(item);
+    } catch (err) {
+      console.error(err);
     }
-    return await this.itemRepository.updateItem(item);
   };
 }
 
