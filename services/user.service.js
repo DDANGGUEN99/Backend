@@ -35,7 +35,7 @@ class UserService {
     }
   };
 
-  // 이메일 인증
+  // 이메일 메일 보내기
   senduserMail = async (email, userNum) => {
     try {
       let emailTemplete = await new Promise((resolve, reject) => {
@@ -92,9 +92,6 @@ class UserService {
       console.error(error);
       throw new AppError(500, '이메일 전송 중 오류가 발생하였습니다.');
     }
-
-    // redis에 인증번호 저장
-    redisClient.set(email, userNum, 'EX', 600); // 10분 동안 유효
   };
 
   // 회원가입
