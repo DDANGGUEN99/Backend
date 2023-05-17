@@ -27,6 +27,6 @@ router.post('/login', userController.login);
 router.post('/login/test', authMiddleware, userController.authMiddlewareTest);
 
 // // 로그아웃
-router.post('/logout', authMiddleware, userController.logout);
+router.post('/logout', userController.logout);
 
 module.exports = router;
