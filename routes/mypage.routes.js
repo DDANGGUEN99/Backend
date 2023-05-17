@@ -12,7 +12,7 @@ const userController = new UserController();
 router.get('/', authMiddleware, userController.getProfile);
 
 // // 회원정보 수정
-router.put('/', authMiddleware, multerMiddleware.array('user_image', 1), userController.editProfile);
+router.put('/', authMiddleware, userController.editProfile);
 
 // // 회원탈퇴
 router.delete('/', authMiddleware, userController.withdrawal);

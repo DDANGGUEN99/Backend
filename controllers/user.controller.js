@@ -170,14 +170,14 @@ class UserController {
   // 회원정보 수정
   editProfile = async (req, res, next) => {
     const { user_id, location_id } = res.locals.user;
-    const { email, nickname, password } = req.body;
-    let user_image;
-    if (req.img_url) {
-      user_image = req.img_url.toString();
-    } else {
-      const profileData = await this.userService.getProfile(user_id);
-      user_image = profileData.user_image;
-    }
+    const { email, nickname, password, user_image } = req.body;
+    // let user_image;
+    // if (req.img_url) {
+    //   user_image = req.img_url.toString();
+    // } else {
+    //   const profileData = await this.userService.getProfile(user_id);
+    //   user_image = profileData.user_image;
+    // }
 
     // 입력받은 값을 userData 객체에 할당
     const userData = {
