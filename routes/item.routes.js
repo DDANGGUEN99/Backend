@@ -9,6 +9,9 @@ const multer = require('multer');
 // GET: 게시글 전체 조회
 router.get('/', authMiddleware, itemController.getItems);
 
+// GET: 내 게시글 조회
+router.get('/myItems', authMiddleware, itemController.getMyItems);
+
 // GET: 게시글 상세 조회
 router.get('/:item_id', authMiddleware, itemController.getItem);
 
@@ -19,7 +22,6 @@ router.delete('/:item_id', authMiddleware, itemController.deleteItem);
 router.post(
   '/',
   authMiddleware,
-  multerMiddleware.array('item_images', 10),
   itemController.setItem,
 );
 
@@ -27,7 +29,6 @@ router.post(
 router.put(
   '/:item_id', 
   authMiddleware,
-  multerMiddleware.array('item_images', 10), 
   itemController.updateItem);
 
 module.exports = router;

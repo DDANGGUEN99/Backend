@@ -41,7 +41,7 @@ class ItemRepository {
         status: 'D',
       },
       {
-        where: itemInfo,
+        where: { item_id: itemInfo.item_id },
       },
     );
   };

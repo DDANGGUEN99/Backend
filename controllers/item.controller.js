@@ -10,14 +10,14 @@ class ItemController {
   setItem = async (req, res, next) => {
     try {
       const { user_id, nickname, location_id } = res.locals.user;
-      const { category_id, title, content, price } = req.body;
+      const { category_id, title, content, price, item_images } = req.body;
       // const item_images = req.files.map(file => file.originalname);
-      let item_images;
-      if (req.img_url) {
-        item_images = req.img_url.toString();
-      } else {
-        item_images = null;
-      }
+      // let item_images;
+      // if (req.img_url) {
+      //   item_images = req.img_url.toString();
+      // } else {
+      //   item_images = null;
+      // }
 
       const itemData = {
         user_id,
@@ -30,7 +30,7 @@ class ItemController {
         item_images,
       };
 
-      console.log('item_images', item_images);
+      // console.log('item_images', item_images);
 
       // 예외처리 / 검증 해야함 (추후)
       await this.itemService.setItem(itemData);
@@ -42,11 +42,11 @@ class ItemController {
     }
   };
 
+  // 판매글 전체 조회
   getItems = async (req, res, next) => {
     try {
       const page = Number(req.query.page);
       const { user_id, location_id } = res.locals.user;
-      console.log('res.locals.user: TEST: ', user_id, location_id);
       const findInfo = { page, location_id, user_id };
       const items = await this.itemService.getItems(findInfo);
       res.status(200).json({ items });
@@ -55,6 +55,21 @@ class ItemController {
     }
   };
 
+  // 내 판매글 조회
+  getMyItems = async (req, res, next) => {
+    const page = Number(req.query.page);
+    const { user_id } = res.locals.user;
+    const findInfo = { page, user_id };
+    const myItems = await this.itemService.getMyItems(findInfo);
+
+    // if (myItems) {
+    //   return res.status(200).json({ itemData: myItems });
+    // } else {
+    //   return res.status(400).json({ errorMessage: "내 판매글 조회 실패"})
+    // }
+  }
+
+  // 판매글 상세 조회
   getItem = async (req, res, next) => {
     try {
       const { item_id } = req.params;
@@ -67,9 +82,10 @@ class ItemController {
     }
   };
 
+  // 판매글 삭제상태로 수정
   deleteItem = async (req, res, next) => {
     try {
-      const item_id = req.body;
+      const { item_id } = req.params;
       const user_id = res.locals.user;
       const itemInfo = { item_id, user_id };
       await this.itemService.deleteItem(itemInfo);
@@ -82,16 +98,16 @@ class ItemController {
   updateItem = async (req, res, next) => {
     const { item_id } = req.params;
     const { user_id, location_id } = res.locals.user;
-    const { category_id, title, content, price, status } = req.body;
+    const { category_id, title, content, price, status, item_images } = req.body;
 
-    let item_images;
-    if (req.img_url) {
-      item_images = req.img_url.toString();
-    } else {
-      const findInfo = { item_id, user_id };
-      const ItemData = await this.itemService.getItem(findInfo);
-      item_images = ItemData.item_images;
-    }
+    // let item_images;
+    // if (req.img_url) {
+    //   item_images = req.img_url.toString();
+    // } else {
+    //   const findInfo = { item_id, user_id };
+    //   const ItemData = await this.itemService.getItem(findInfo);
+    //   item_images = ItemData.item_images;
+    // }
 
     // 입력받은 값을 itemData 객체에 할당
     const itemData = {
@@ -114,14 +130,13 @@ class ItemController {
     const getItemData = await this.itemService.getItem(findInfo);
 
     if (!updateResult) {
-      return res.status(400).json({ errorMessage: "판매글 수정 실패"})
+      return res.status(400).json({ Message: "판매글 수정 실패"})
     } else {
       return res.status(200).json({ itemData: getItemData });
     }
-
-    return res.status(200).end();
   };
 
+  // 판매글 상태값 수정 (현재 미사용)
   updateStatus = async (req, res, next) => {
     try {
       const { item_id } = req.params;
