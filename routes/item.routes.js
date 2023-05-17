@@ -25,4 +25,7 @@ router.put(
   authMiddleware,
   itemController.updateItem);
 
+// 판매글용 이미지 업로더
+router.post('/imgUpload', authMiddleware, multerMiddleware.array('item_images', 10), itemController.imgUpload);
+
 module.exports = router;

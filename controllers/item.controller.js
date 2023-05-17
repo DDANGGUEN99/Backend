@@ -115,7 +115,18 @@ class ItemController {
     }
   };
 
-  
+  // 판매글전용 이미지 업로더
+  imgUpload = async (req, res, next) => {
+    let user_image;
+    if (req.img_url) {
+      user_image = req.img_url.toString();
+      const user_image_array = user_image.split(',');
+      return res.status(200).json({imageData: user_image_array});
+    } else {
+      user_image = null;
+      return res.status(400).send('이미지 업로드 실패');
+    }
+  };
 }
 
 module.exports = ItemController;
