@@ -19,7 +19,7 @@ class ItemController {
         item_images = null;
       }
 
-      const item = {
+      const itemData = {
         user_id,
         nickname,
         category_id,
@@ -33,9 +33,8 @@ class ItemController {
       console.log('item_images', item_images);
 
       // 예외처리 / 검증 해야함 (추후)
-
-      await this.itemService.setItem(item);
-      return res.status(200).json({ message: '판매글 작성 성공' });
+      await this.itemService.setItem(itemData);
+      return res.status(200).json({ itemData });
     } catch (error) {
       console.error(error);
       // next(error, req, res, '판매글 작성 실패');
@@ -79,39 +78,48 @@ class ItemController {
     }
   };
 
+  // 판매글 수정
   updateItem = async (req, res, next) => {
-    try {
-      const { item_id } = req.params;
-      const { user_id, location_id } = res.locals.user;
-      const { category_id, title, content, price, status } = req.body;
+    const { item_id } = req.params;
+    const { user_id, location_id } = res.locals.user;
+    const { category_id, title, content, price, status } = req.body;
 
-      let item_images;
-      if (req.img_url) {
-        item_images = req.img_url.toString();
-      } else {
-        const findInfo = { item_id, user_id };
-        const ItemData = await this.itemService.getItem(findInfo);
-        item_images = ItemData.item_images;
-      }
-
-      const item = {
-        item_id,
-        user_id,
-        category_id,
-        title,
-        content,
-        price,
-        location_id,
-        status,
-        item_images,
-      };
-
-      await this.itemService.updateItem(item);
-
-      return res.status(200).end();
-    } catch (error) {
-      next(error, req, res, '판매글 수정에 실패하였습니다.');
+    let item_images;
+    if (req.img_url) {
+      item_images = req.img_url.toString();
+    } else {
+      const findInfo = { item_id, user_id };
+      const ItemData = await this.itemService.getItem(findInfo);
+      item_images = ItemData.item_images;
     }
+
+    // 입력받은 값을 itemData 객체에 할당
+    const itemData = {
+      item_id,
+      user_id,
+      category_id,
+      title,
+      content,
+      price,
+      location_id,
+      status,
+      item_images,
+    };
+
+    // 판매글 수정 처리 결과값 가져오기 (성공: 1, 실패: 0)
+    const updateResult = await this.itemService.updateItem(itemData);
+
+    // 판매글 수정 처리 후 정보 가져오기
+    const findInfo = { item_id, user_id };
+    const getItemData = await this.itemService.getItem(findInfo);
+
+    if (!updateResult) {
+      return res.status(400).json({ errorMessage: "판매글 수정 실패"})
+    } else {
+      return res.status(200).json({ itemData: getItemData });
+    }
+
+    return res.status(200).end();
   };
 
   updateStatus = async (req, res, next) => {
