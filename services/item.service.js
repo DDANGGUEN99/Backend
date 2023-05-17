@@ -17,10 +17,10 @@ class ItemService {
     const itemMap = items.map((item) => {
       item.dataValues.is_liked = !!item.Likes;
       if (!item.dataValues.item_images) {
-        console.log('이미지 null 일 때');
+        // console.log('이미지 null 일 때');
         item.dataValues.thumbnail_url = null;
       } else {
-        console.log('이미지 있을 때');
+        // console.log('이미지 있을 때');
         item.dataValues.thumbnail_url = item.dataValues.item_images.split(
           ',',
           2,
@@ -35,6 +35,24 @@ class ItemService {
 
   // 내 판매글 조회
   getMyItems = async (findInfo) => {
+    const items = await this.itemRepository.getMyItems(findInfo);
+    const itemMap = items.map((item) => {
+      item.dataValues.is_liked = !!item.Likes;
+      if (!item.dataValues.item_images) {
+        // console.log('이미지 null 일 때');
+        item.dataValues.thumbnail_url = null;
+      } else {
+        // console.log('이미지 있을 때');
+        item.dataValues.thumbnail_url = item.dataValues.item_images.split(
+          ',',
+          2,
+        )[0];
+      }
+      delete item.dataValues.item_images;
+      this.itemFormating(item);
+      return item;
+    });
+    return itemMap;
   }
 
   // 판매글 상세 조회
