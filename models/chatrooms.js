@@ -19,11 +19,13 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Users, {
         targetKey: 'user_id',
         foreignKey: 'seller_id',
+        as: 'Seller'
       });
 
       this.belongsTo(models.Users, {
         targetKey: 'user_id',
         foreignKey: 'buyer_id',
+        as: 'Buyer'
       });
 
       this.hasMany(models.Chats, {
