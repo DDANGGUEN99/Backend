@@ -109,6 +109,22 @@ class ItemRepository {
       return { message: '수정 실패' };
     }
   };
+
+  plusLikes = async (item_id) => {
+    const incrementLikes = await this.itemsModel.increment('likes', {
+      by: 1,
+      where: { item_id }
+    });
+    return incrementLikes;
+  };
+  
+  minusLikes = async (item_id) => {
+    const decrementLikes = await this.itemsModel.decrement('likes', {
+      by: 1,
+      where: { item_id }
+    });
+    return decrementLikes;
+  };
 }
 
 module.exports = ItemRepository;

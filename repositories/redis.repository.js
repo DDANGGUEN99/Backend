@@ -40,6 +40,7 @@ class RedisClientRepository {
   delData = async (key) => {
     await this.initialize();
     await this.redisClient.v4.del(key);
+    return 1;
   };
 }
 

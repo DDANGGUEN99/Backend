@@ -12,9 +12,6 @@ router.get('/', authMiddleware, itemController.getItems);
 // GET: 게시글 상세 조회
 router.get('/:item_id', authMiddleware, itemController.getItem);
 
-// DELETE: 판매글 삭제
-router.delete('/:item_id', authMiddleware, itemController.deleteItem);
-
 // 판매글 생성
 router.post(
   '/',
