@@ -73,11 +73,6 @@ class ItemRepository {
     return updateItemData;
   };
 
-  // 판매글 찾기용
-  getItemOne = async (item_id) => {
-    return await this.itemsModel.findOne({ where: { item_id } });
-  };
-
   // 판매글 status 수정
   updateStatus = async (item) => {
     const updateStatus = await this.itemsModel.update(
