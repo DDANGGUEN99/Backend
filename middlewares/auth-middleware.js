@@ -90,11 +90,6 @@ module.exports = async (req, res, next) => {
       res.cookie('accesstoken', `Bearer ${accesstokenValue}`);
       res.cookie('refreshtoken', `Bearer ${refreshtokenValue}`);
     }
-    console.log({
-      accesstokenValue,
-      refreshtokenValue,
-      userData: userData.dataValues,
-    });
     res.locals.user = userData;
     // res.locals.user = jwt.getTokenPayload(accesstokenValue);
     next();

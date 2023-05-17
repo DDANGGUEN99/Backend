@@ -180,6 +180,13 @@ class UserController {
   editProfile = async (req, res, next) => {
     const { user_id, location_id } = res.locals.user;
     const { email, nickname, password, user_image } = req.body;
+    // let user_image;
+    // if (req.img_url) {
+    //   user_image = req.img_url.toString();
+    // } else {
+    //   const profileData = await this.userService.getProfile(user_id);
+    //   user_image = profileData.user_image;
+    // }
 
     // 입력받은 값을 userData 객체에 할당
     const userData = {
@@ -194,11 +201,14 @@ class UserController {
     // 회원정보 수정 처리 결과값 가져오기 (성공: 1, 실패: 0)
     const updateResult = await this.userService.editProfile(userData);
 
+    // 회원정보 수정 처리 후 정보 가져오기
+    const getProfileData = await this.userService.getProfile(user_id);
+
     // 회원정보 수정 결과에 따른 응답 핸들러
     if (!updateResult) {
       return res.status(412).json({ errorMessage: '회원정보 수정 실패' });
     } else {
-      return res.status(200).end();
+      return res.status(200).json({ userData: getProfileData });
     }
   };
 

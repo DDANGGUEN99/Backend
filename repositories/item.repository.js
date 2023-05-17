@@ -41,7 +41,7 @@ class ItemRepository {
         status: 'D',
       },
       {
-        where: itemInfo,
+        where: { item_id: itemInfo.item_id },
       },
     );
   };
@@ -71,11 +71,6 @@ class ItemRepository {
       { where: { item_id: item.item_id } },
     );
     return updateItemData;
-  };
-
-  // 판매글 찾기용
-  getItemOne = async (item_id) => {
-    return await this.itemsModel.findOne({ where: { item_id } });
   };
 
   // 판매글 status 수정

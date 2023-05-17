@@ -3,6 +3,8 @@ const router = express.Router();
 
 const authMiddleware = require('../middlewares/auth-middleware.js');
 const UserController = require('../controllers/user.controller.js');
+const multerMiddleware = require('../middlewares/multer.js');
+const multer = require('multer');
 
 const userController = new UserController();
 
