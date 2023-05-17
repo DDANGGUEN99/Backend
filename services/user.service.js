@@ -147,7 +147,6 @@ class UserService {
   logout = async (refreshtoken) => {
     try {
       const result = await this.redisClientRepository.delData(refreshtoken);
-      console.log(result);
       return result;
     } catch (err) {
       console.error(err);
