@@ -136,13 +136,17 @@ class UserController {
     // const { refreshtoken } = req.headers;
     // const { refreshtoken } = req.cookies;
 
+    let accesstoken;
     let refreshtoken;
 
     if (req.cookies.refreshtoken) {
+      accesstoken = req.cookies.accesstoken;
       refreshtoken = req.cookies.refreshtoken;
     } else if (req.headers.refreshtoken) {
+      accesstoken = req.headers.accesstoken;
       refreshtoken = req.headers.refreshtoken;
     } else {
+      accesstoken = null;
       refreshtoken = null;
     }
 
