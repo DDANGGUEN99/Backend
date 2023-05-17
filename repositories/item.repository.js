@@ -12,7 +12,11 @@ class ItemRepository {
     const { page, location_id, user_id } = findInfo;
     const limit = 10;
     const offset = (page - 1) * limit;
+    // itemsModel의 findAll 메소드를 호출하는 상태
+    // itemsModel은 뭐임? sequelize에서 제공하는 DB 인터페이스 객체
+    // findAll은 객체를 인자로 받는다. 그리고 객체의 프로퍼티에 각 명령어에 대한 값들이 들어간다. 프로퍼티의 순서는 상관없이 ORM이 재조정해준다.
     const items = await this.itemsModel.findAll({
+      // order by에 접근할 수 있는 옵션.
       order: [['item_id', 'DESC']],
       include: [
         {
