@@ -11,6 +11,7 @@ class ItemService {
   itemRepository = new ItemRepository(Items);
   userRepository = new UserRepository(Users);
 
+  // 판매글 전체 조회
   getItems = async (findInfo) => {
     const items = await this.itemRepository.findAll(findInfo);
     const itemMap = items.map((item) => {
@@ -32,6 +33,11 @@ class ItemService {
     return itemMap;
   };
 
+  // 내 판매글 조회
+  getMyItems = async (findInfo) => {
+  }
+
+  // 판매글 상세 조회
   getItem = async (findInfo) => {
     const item = await this.itemRepository.findOne(findInfo.item_id);
     if (!item) {
@@ -49,12 +55,14 @@ class ItemService {
     return item;
   };
 
+
   itemFormating = (item) => {
     item.dataValues.category = getCategoryName(item.dataValues.category_id);
     item.dataValues.location = getLocationName(item.dataValues.location_id);
     delete item.dataValues.category_id;
     delete item.dataValues.location_id;
   };
+
 
   deleteItem = async (itemInfo) => {
     const item = await this.itemRepository.findOne(itemInfo.item_id);

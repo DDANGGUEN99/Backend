@@ -18,7 +18,7 @@ router.get('/checkEmail', userController.checkEmail);
 router.get('/checkNickname', userController.checkNickname);
 
 // 회원가입
-router.post('/signup', multerMiddleware.array('user_image', 1), userController.signup);
+router.post('/signup', userController.signup);
 
 // // 로그인
 router.post('/login', userController.login);
