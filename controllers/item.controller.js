@@ -63,7 +63,11 @@ class ItemController {
       const findInfo = { item_id, user_id };
       const item = await this.itemService.getItem(findInfo);
       const myItems = await this.itemService.getMyItems(findInfo);
-      res.status(200).json({ item, myItems });
+      if (!myItems) {
+        res.status(400).json({ message: "판매글 없음"})
+      } else {
+        res.status(200).json({ item, myItems });
+      }
     } catch (error) {
       next(error, req, res, '판매글 조회에 실패하였습니다.');
     }
