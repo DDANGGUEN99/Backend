@@ -55,20 +55,6 @@ class ItemController {
     }
   };
 
-  // 내 판매글 조회
-  getMyItems = async (req, res, next) => {
-    const page = Number(req.query.page);
-    const { user_id } = res.locals.user;
-    const findInfo = { page, user_id };
-    const myItems = await this.itemService.getMyItems(findInfo);
-
-    // if (myItems) {
-    //   return res.status(200).json({ itemData: myItems });
-    // } else {
-    //   return res.status(400).json({ errorMessage: "내 판매글 조회 실패"})
-    // }
-  }
-
   // 판매글 상세 조회
   getItem = async (req, res, next) => {
     try {
@@ -76,7 +62,8 @@ class ItemController {
       const { user_id } = res.locals.user;
       const findInfo = { item_id, user_id };
       const item = await this.itemService.getItem(findInfo);
-      res.status(200).json({ item });
+      const myItems = await this.itemService.getMyItems(findInfo);
+      res.status(200).json({ item, myItems });
     } catch (error) {
       next(error, req, res, '판매글 조회에 실패하였습니다.');
     }
