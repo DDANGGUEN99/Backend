@@ -2,6 +2,8 @@ const redis = require('redis');
 const UserService = require('../services/user.service');
 const RedisClientRepository = require('../repositories/redis.repository.js');
 const redisClient = new RedisClientRepository(redis);
+// const { Op } = require('sequelize');
+// const { Items } = require('../models');
 
 class UserController {
   userService = new UserService();
@@ -243,9 +245,27 @@ class UserController {
     }
   };
 
-  selllist = async (req, res, next) => {
-    const { user_id } = res.locals.user;
-  };
+  // 내 판매내역 조회
+  //   selllist = async (findInfo) => {
+  //     const { item_id, user_id } = findInfo;
+  //     const items = await this.itemsModel.findAll({
+  //       order: [['item_id', 'DESC']],
+  //       include: [
+  //         {
+  //           model: Likes,
+  //           attributes: [],
+  //           where: { user_id },
+  //           required: false,
+  //         },
+  //       ],
+  //       where: {
+  //         user_id,
+  //         status: { [Op.ne]: 'D' },
+  //         item_id: { [Op.ne]: item_id },
+  //       },
+  //     });
+  //     return items;
+  //   };
 }
 
 module.exports = UserController;
