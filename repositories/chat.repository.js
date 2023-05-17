@@ -1,4 +1,4 @@
-const { ChatRooms, Chats, Items, Users } = require('../models');
+const { ChatRooms, Chats, Items, Users, sequelize } = require('../models');
 const { Op } = require('sequelize');
 
 class ChatRepository {
@@ -14,7 +14,6 @@ class ChatRepository {
         {
           model: Items,
           attributes: ['item_images'],
-          limit: 1,
         },
         {
           model: Chats,
@@ -24,17 +23,16 @@ class ChatRepository {
         },
         {
           model: Users,
-          as: 'Buyer',
-          attributes: ['user_id', 'nickname'],
-          where: { seller_id: user_id },
+          as: 'Seller',
+          attributes: ['nickname', 'user_image'],
         },
         {
           model: Users,
-          as: 'Seller',
-          attributes: ['user_id', 'nickname'],
-          where: { buyer_id: user_id },
-        },
+          as: 'Buyer',
+          attributes: ['nickname', 'user_image'],
+        }
       ],
+      where: { [Op.or]: [{ seller_id: user_id }, { buyer_id: user_id }], },
     });
   };
 
@@ -47,6 +45,17 @@ class ChatRepository {
           attributes: ['item_id', 'title'],
           where: { item_id },
         },
+        {
+          model: Chats,
+          attributes: ['message'],
+          order: [['createdAt', 'DESC']],
+          limit: 1,
+        },
+        {
+          model: Users,
+          as: 'Buyer',
+          attributes: ['nickname', 'user_image'],
+        }
       ],
       where: {},
     });
