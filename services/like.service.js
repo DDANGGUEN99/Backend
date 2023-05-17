@@ -22,22 +22,6 @@ class ItemService {
         await this.itemRepository.minusLikes(item_id);  // 판매글 Likes -1
         return false;
       }
-
-      // 관심목록 수정처리 (추가/삭제)
-      const updateResult = await this.likeRepository.updateLikeDb(
-        item_id,
-        user_id,
-      );
-
-      // 관심목록 추가(T)/삭제(F)에 따른 Items.likes Count Handle
-      if (updateResult) {
-        // updateResult === true 이면?
-        // await this.itemRepository.create(item_id);
-        return true;
-      } else {
-        // await this.itemRepository.destroy(item_id);
-        return false;
-      }
     } catch (err) {
       console.error(err);
     }
