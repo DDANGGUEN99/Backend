@@ -51,7 +51,7 @@ class LikeRepository {
 
   findlikeItem = async (user_id) => {
     const likeItems = await Items.findAll({
-      order: [['createdAt', 'desc']],
+      order: [[Likes, 'createdAt', 'desc']], // like 순서대로 가져오기
       include: [
         {
           model: Likes,
