@@ -3,7 +3,7 @@ require('dotenv').config();
 // Redis를 위한 유틸 함수 작성
 // Redis에 Refresh Token을 저장할 것이기 때문에, 미리 Redis를 셋팅
 
-// Rdeis 클래스 선언
+// Redis 클래스 선언
 class RedisClientRepository {
   constructor(redis) {
     this.redisClient = redis.createClient({
