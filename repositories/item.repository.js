@@ -29,6 +29,26 @@ class ItemRepository {
     return items;
   };
 
+  // 내 판매글 조회하기
+  getMyItems = async (findInfo) => {
+    const { item_id, user_id } = findInfo;
+    const limit = 4;
+    const items = await this.itemsModel.findAll({
+      order: [['item_id', 'DESC']],
+      include: [
+        {
+          model: Likes,
+          attributes: [],
+          where: { user_id },
+          required: false,
+        },
+      ],
+      where: { user_id, status: { [Op.ne]: 'D' }, item_id: { [Op.ne]: item_id} },
+      limit
+    });
+    return items;
+  }
+
   findOne = async (item_id) => {
     return await this.itemsModel.findOne({
       where: { item_id },
