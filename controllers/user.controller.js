@@ -1,5 +1,6 @@
 const UserService = require('../services/user.service');
 const AppError = require('../utils/appError');
+const redisClient = require('../repositories/redis.repository');
 
 class UserController {
   userService = new UserService();
@@ -40,9 +41,30 @@ class UserController {
     }
   };
 
+  // 이메일 인증
+  userMail = async (req, res, next) => {
+    try {
+      const { email } = req.body;
+      let userNum = Math.random().toString().substring(2, 8);
+      await this.userService.senduserMail(email, userNum);
+      res.status(200).json({ userNum: userNum });
+    } catch (error) {
+      throw new AppError(400, '알수없는 이유로 오류가 발생하였습니다.');
+    }
+  };
+
   // 회원 가입
   signup = async (req, res) => {
-    const { email, nickname, password, location_id, user_image } = req.body;
+    const { email, nickname, password, location_id, user_image, userCode } =
+      req.body;
+    const redisGetNum = await redisClient.get(email);
+
+    // 이메일 인증
+    if (userCode !== redisGetNum) {
+      return res.status(400).json({
+        errorMessage: '인증코드가 일치하지 않습니다. 다시 시도해주세요.',
+      });
+    }
 
     // input data 유효성 검사
     if (!email || !nickname || !password) {
@@ -107,19 +129,6 @@ class UserController {
     res.cookie('refreshtoken', `Bearer ${refreshtoken}`);
 
     return res.status(200).json({ accesstoken, refreshtoken, userData });
-  };
-
-  // 이메일 인증
-  userMail = async (req, res, next) => {
-    try {
-      const { email } = req.body;
-      let userNum = Math.random().toString().substring(2, 8);
-      const MailWithNum = await this.userService.senduserMail(email, userNum);
-      console.log(MailWithNum);
-      res.status(200).json({ userNum: userNum });
-    } catch (error) {
-      throw new AppError(404, '알수없는 이유로 오류가 발생하였습니다.');
-    }
   };
 
   // 로그아웃

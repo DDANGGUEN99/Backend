@@ -35,6 +35,68 @@ class UserService {
     }
   };
 
+  // 이메일 인증
+  senduserMail = async (email, userNum) => {
+    try {
+      let emailTemplete = await new Promise((resolve, reject) => {
+        // 이메일 템플릿 파일 렌더링
+        ejs.renderFile(
+          appDir + '/utils/mail.ejs', // 경로생성
+          { userCode: userNum }, // 생성 번호 전달
+          function (err, data) {
+            if (err) {
+              reject(err);
+            }
+            resolve(data);
+          },
+        );
+      });
+
+      // 이메일 전송 객체 생성
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // TLS 암호화사용 off
+        auth: {
+          user: process.env.NODEMAILER_USER,
+          pass: process.env.NODEMAILER_PASS,
+        },
+        // tls: {
+        //   rejectUnauthorized: false,
+        // },
+      });
+
+      // 이메일 전송
+      let mailOptions = {
+        from: `DDANGGEUN99 <${process.env.NODEMAILER_USER}>`,
+        to: email,
+        subject: '인증번호 확인 메일입니다', // email 제목
+        html: emailTemplete,
+      };
+
+      // 전송결과
+      await new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.error(error);
+            reject(error);
+          } else {
+            console.log(`${email}주소로 인증 메일을 보냈습니다.`);
+            transporter.close();
+            resolve();
+          }
+        });
+      });
+    } catch (error) {
+      console.error(error);
+      throw new AppError(500, '이메일 전송 중 오류가 발생하였습니다.');
+    }
+
+    // redis에 인증번호 저장
+    redisClient.set(email, userNum, 'EX', 600); // 10분 동안 유효
+  };
+
   // 회원가입
   signup = async (email, nickname, password, location_id, user_image) => {
     try {
@@ -79,66 +141,6 @@ class UserService {
     } catch (err) {
       console.error(err);
     }
-  };
-
-  // 이메일 인증
-  senduserMail = async (mail, userNum) => {
-    try {
-      let emailTemplete = await new Promise((resolve, reject) => {
-        // 이메일 템플릿 파일 렌더링
-        ejs.renderFile(
-          appDir + '/utils/mail.ejs', // 경로생성
-          { userCode: userNum }, // 생성 번호 전달
-          function (err, data) {
-            if (err) {
-              reject(err);
-            }
-            resolve(data);
-          },
-        );
-      });
-
-      // 이메일 전송 객체 생성
-      let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // TLS 암호화사용 off
-        auth: {
-          user: process.env.NODEMAILER_USER,
-          pass: process.env.NODEMAILER_PASS,
-        },
-        // tls: {
-        //   rejectUnauthorized: false,
-        // },
-      });
-
-      // 이메일 전송
-      let mailOptions = {
-        from: `ddanggeun99 <${process.env.NODEMAILER_USER}>`, // 당근99 의심
-        to: mail,
-        subject: '인증번호를 입력해주세요.', // email 제목
-        html: emailTemplete,
-      };
-
-      // 전송결과
-      await new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            console.error(error);
-            reject(error);
-          } else {
-            console.log('이메일 전송 성공');
-            transporter.close();
-            resolve();
-          }
-        });
-      });
-    } catch (error) {
-      console.error(error);
-      throw new AppError(500, '이메일 전송 중 오류가 발생하였습니다.');
-    }
-    return '이메일 전송 완료';
   };
 
   // 로그아웃
