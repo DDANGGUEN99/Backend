@@ -11,6 +11,34 @@ class ItemService {
   itemRepository = new ItemRepository(Items);
   userRepository = new UserRepository(Users);
 
+  // 판매글 생성
+  setItem = async (item) => {
+    try {
+      return await this.itemRepository.setItem(item);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 판매글 수정
+  updateItem = async (item) => {
+    try {
+      const itemData = await this.itemRepository.findOne(item.item_id);
+
+      if (!itemData) {
+        throw new Error('존재하지 않는 게시글입니다.');
+      }
+
+      if (itemData.user_id !== item.user_id) {
+        throw new Error('수정 권한이 없습니다.');
+      }
+      
+      return await this.itemRepository.updateItem(item);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // 판매글 전체 조회
   getItems = async (findInfo) => {
     try {
@@ -80,58 +108,12 @@ class ItemService {
       console.error(err);
     }
   };
-
   itemFormating = (item) => {
     try {
       item.dataValues.category = getCategoryName(item.dataValues.category_id);
       item.dataValues.location = getLocationName(item.dataValues.location_id);
       delete item.dataValues.category_id;
       delete item.dataValues.location_id;
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  deleteItem = async (itemInfo) => {
-    try {
-      const item = await this.itemRepository.findOne(itemInfo.item_id);
-      if (!item) {
-        throw new AppError(404, '판매글 조회에 실패했습니다.');
-      }
-
-      if (item.user_id != itemInfo.user_id) {
-        throw new AppError(403, '게시글의 삭제 권한이 존재하지 않습니다.');
-      }
-
-      await this.itemRepository.destroy(itemInfo);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // 판매글 생성
-  setItem = async (item) => {
-    try {
-      return await this.itemRepository.setItem(item);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // 판매글 수정
-  updateItem = async (item) => {
-    try {
-      const itemData = await this.itemRepository.findOne(item.item_id);
-
-      if (!itemData) {
-        throw new Error('존재하지 않는 게시글입니다.');
-      }
-
-      if (itemData.user_id !== item.user_id) {
-        throw new Error('수정 권한이 없습니다.');
-      }
-      
-      return await this.itemRepository.updateItem(item);
     } catch (err) {
       console.error(err);
     }
