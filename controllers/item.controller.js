@@ -12,8 +12,12 @@ class ItemController {
       const { user_id, nickname, location_id } = res.locals.user;
       const { category_id, title, content, price } = req.body;
       // const item_images = req.files.map(file => file.originalname);
-      const item_images = req.img_url.toString();
-      console.log(item_images);
+      let item_images;
+      if (req.img_url) {
+        item_images = req.img_url.toString();
+      } else {
+        item_images = null;
+      }
 
       const item = {
         user_id,
@@ -79,8 +83,16 @@ class ItemController {
     try {
       const { item_id } = req.params;
       const { user_id, location_id } = res.locals.user;
-      const { category_id, title, content, price, status, item_images } =
-        req.body;
+      const { category_id, title, content, price, status } = req.body;
+
+      let item_images;
+      if (req.img_url) {
+        item_images = req.img_url.toString();
+      } else {
+        const findInfo = { item_id, user_id };
+        const ItemData = await this.itemService.getItem(findInfo);
+        item_images = ItemData.item_images;
+      }
 
       const item = {
         item_id,
@@ -94,7 +106,7 @@ class ItemController {
         item_images,
       };
 
-      await this.itemService.updateItem(item, user_id);
+      await this.itemService.updateItem(item);
 
       return res.status(200).end();
     } catch (error) {

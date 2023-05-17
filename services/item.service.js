@@ -75,21 +75,17 @@ class ItemService {
   };
 
   // 판매글 수정
-  updateItem = async (item, user_id) => {
+  updateItem = async (item) => {
     const itemData = await this.itemRepository.findOne(item.item_id);
 
     if (!itemData) {
       throw new Error('존재하지 않는 게시글입니다.');
     }
 
-    if (itemData.user_id !== user_id) {
+    if (itemData.user_id !== item.user_id) {
       throw new Error('수정 권한이 없습니다.');
     }
     return await this.itemRepository.updateItem(item);
-  };
-
-  getItemOne = async (item_id) => {
-    return await this.itemRepository.getItemOne(item_id);
   };
 }
 
