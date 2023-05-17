@@ -7,7 +7,7 @@ class ItemRepository {
     this.itemsModel = items;
   }
 
-  // status 관련 코드도 추가해야 됨
+  // 판매글 전체 조회
   findAll = async (findInfo) => {
     const { page, location_id, user_id } = findInfo;
     const limit = 10;
@@ -49,21 +49,11 @@ class ItemRepository {
     return items;
   }
 
+  // 판매글 한 개 조회
   findOne = async (item_id) => {
     return await this.itemsModel.findOne({
       where: { item_id },
     });
-  };
-
-  destroy = async (itemInfo) => {
-    await this.itemsModel.update(
-      {
-        status: 'D',
-      },
-      {
-        where: { item_id: itemInfo.item_id },
-      },
-    );
   };
 
   isLiked = async (findInfo) => {
@@ -93,23 +83,7 @@ class ItemRepository {
     return updateItemData;
   };
 
-  // 판매글 status 수정
-  updateStatus = async (item) => {
-    const updateStatus = await this.itemsModel.update(
-      {
-        ...item,
-        updatedAt: String(Date.now()),
-      },
-      { where: { item_id: item.item_id } },
-    );
-
-    if (updateStatus) {
-      return { message: '상태가 수정되었습니다.' };
-    } else {
-      return { message: '수정 실패' };
-    }
-  };
-
+  // 판매글 Likes 컬럼 +1
   plusLikes = async (item_id) => {
     const incrementLikes = await this.itemsModel.increment('likes', {
       by: 1,
@@ -118,6 +92,7 @@ class ItemRepository {
     return incrementLikes;
   };
   
+  // 판매글 Likes 컬럼 -1
   minusLikes = async (item_id) => {
     const decrementLikes = await this.itemsModel.decrement('likes', {
       by: 1,
