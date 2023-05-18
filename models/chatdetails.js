@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
     },
     yet_chat_count: {
-      allowNull: false,
+      allowNull: true,
       type: DataTypes.INTEGER,
       defaultValue: 0,
     }

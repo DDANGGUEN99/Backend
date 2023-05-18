@@ -56,6 +56,11 @@ class ChatService {
     chatRoomInfo.seller_id = item.user_id;
     await this.chatRepository.create(chatRoomInfo);
   }
+
+  getChats = async (room_id) => {
+    const chats = await this.chatRepository.findAllChats(room_id);
+    return chats;
+  }
 }
 
 module.exports = ChatService;

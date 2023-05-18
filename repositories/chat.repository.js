@@ -6,8 +6,17 @@ class ChatRepository {
     const chatRoom = await ChatRooms.create(chatRoomInfo);
     console.log(chatRoom);
     // chatDetail 생성
-    await ChatDetails.create(chatRoomInfo.buyer_id, chatRoom.dataValues.room_id);
-    await ChatDetails.create(chatRoomInfo.seller_id, chatRoom.dataValues.room_id);
+    console.log(chatRoom.dataValues.room_id);
+    console.log(chatRoomInfo.buyer_id);
+    console.log(chatRoomInfo.seller_id);
+    // await ChatDetails.create({
+    //   room_id: chatRoom.dataValues.room_id,
+    //   user_id: chatRoomInfo.buyer_id
+    // });
+    // await ChatDetails.create({
+    //   room_id: chatRoom.dataValues.room_id,
+    //   user_id: chatRoomInfo.seller_id
+    // });
   };
 
   // 안 읽은 채팅 개수를 어떻게 구현하지? 일단 스킵 할까?
@@ -34,9 +43,9 @@ class ChatRepository {
           model: Users,
           as: 'Buyer',
           attributes: ['nickname', 'user_image'],
-        }
+        },
       ],
-      where: { [Op.or]: [{ seller_id: user_id }, { buyer_id: user_id }], },
+      where: { [Op.or]: [{ seller_id: user_id }, { buyer_id: user_id }] },
     });
   };
 
@@ -59,9 +68,15 @@ class ChatRepository {
           model: Users,
           as: 'Buyer',
           attributes: ['nickname', 'user_image'],
-        }
+        },
       ],
       where: {},
+    });
+  };
+
+  findAllChats = async (room_id) => {
+    return await ChatRooms.findAll({
+      where: { room_id },
     });
   };
 }
