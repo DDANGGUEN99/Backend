@@ -117,15 +117,18 @@ class ItemController {
 
   // 판매글전용 이미지 업로더
   imgUpload = async (req, res, next) => {
-    let item_images;
-    if (req.img_url) {
-      item_images = req.img_url.toString();
-      const item_images_array = item_images.split(',');
-      return res.status(200).json({imageData: item_images_array});
-    } else {
-      item_images = null;
-      return res.status(400).send('이미지 업로드 실패');
-    }
+    const item_images = req.img_url.toString();
+    const item_images_array = item_images.split(',');
+    return res.status(200).json({imageData: item_images_array});
+    // let item_images;
+    // if (req.img_url) {
+    //   item_images = req.img_url.toString();
+    //   const item_images_array = item_images.split(',');
+    //   return res.status(200).json({imageData: item_images_array});
+    // } else {
+    //   item_images = null;
+    //   return res.status(400).send('이미지 업로드 실패');
+    // }
   };
 }
 
