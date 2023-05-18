@@ -18,6 +18,6 @@ router.put('/', authMiddleware, userController.editProfile);
 router.delete('/', authMiddleware, userController.withdrawal);
 
 // 판매내역 조회
-router.get('/selllist', authMiddleware, userController.selllist);
+// router.get('/selllist', authMiddleware, userController.selllist);
 
 module.exports = router;
