@@ -59,7 +59,9 @@ class ItemService {
         this.itemFormating(item);
         return item;
       });
-      return itemMap;
+
+      const itemTotal = await this.itemRepository.getItemTotal();
+      return { item_total_count: itemTotal, items: itemMap };
     } catch (err) {
       console.error(err);
     }

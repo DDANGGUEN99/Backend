@@ -29,6 +29,11 @@ class ItemRepository {
     return items;
   };
 
+  // 판매글 전체 개수 조회
+  getItemTotal = async () => {
+    return await this.itemsModel.count();
+  }
+
   // 내 판매글 조회하기
   getMyItems = async (findInfo) => {
     const { item_id, user_id } = findInfo;

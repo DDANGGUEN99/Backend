@@ -49,7 +49,7 @@ class ItemController {
       const { user_id, location_id } = res.locals.user;
       const findInfo = { page, location_id, user_id };
       const items = await this.itemService.getItems(findInfo);
-      res.status(200).json({ items });
+      res.status(200).json(items);
     } catch (error) {
       next(error, req, res, '판매글 조회에 실패하였습니다.');
     }
