@@ -100,7 +100,7 @@ class ItemService {
       }
 
       item.dataValues.is_liked = await this.itemRepository.isLiked(findInfo);
-      const user = await this.userRepository.getProfile(findInfo.user_id);
+      const user = await this.userRepository.getProfile(item.user_id);
       item.dataValues.profile_url = user.user_image;
       this.itemFormating(item);
       return item;

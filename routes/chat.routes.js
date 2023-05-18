@@ -24,4 +24,9 @@ router.post('/chat', authMiddleware, async (req, res) => {
   res.status(200).json({ message: '채팅 생성함' });
 });
 
+// 채팅 읽음 처리 예시 - 추후 삭제 예정
+router.post('/read', authMiddleware, async (req, res) => {
+
+});
+
 module.exports = router;
