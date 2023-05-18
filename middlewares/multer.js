@@ -25,15 +25,15 @@ const uploadImage = multer({
     s3: s3,
     bucket: 'ddanggeun9', // AWS버킷명
     contentType: multerS3.AUTO_CONTENT_TYPE, // 타입 자동감지
-    fileFilter: (req, file, callback) => {
-      // 파일 필터링 로직
-      // 업로드된 파일이 없는 경우 null 반환
-      if (!file) {
-        return callback(null, false);
-      }
-      // 파일 허용
-      callback(null, true);
-    },
+    // fileFilter: (req, file, callback) => {
+    //   // 파일 필터링 로직
+    //   // 업로드된 파일이 없는 경우 null 반환
+    //   if (!file) {
+    //     return callback(null, false);
+    //   }
+    //   // 파일 허용
+    //   callback(null, true);
+    // },
     key: (req, file, callback) => {
       // 파일 키 생성 로직
       // 날짜 추출하여 각 변수명으로 분할 할당
