@@ -34,6 +34,16 @@ class ChatController {
       next(error, req, res, '채팅방 생성에 실패했습니다.');
     }
   };
+
+  getChats = async (req, res, next) => {
+    try {
+      const { room_id } = req.params;
+      const chats = await this.chatService.getChats(room_id);
+      res.status(200).json({ chats });
+    } catch (error) {
+      next(error, req, res, '채팅 내용 조회에 실패했습니다.');
+    }
+  }
 }
 
 module.exports = ChatController;
