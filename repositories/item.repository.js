@@ -7,7 +7,10 @@ class ItemRepository {
     this.itemsModel = items;
   }
 
+<<<<<<< HEAD
   // 판매글 전체 조회
+=======
+>>>>>>> e9e8eb3 ([comment] item.repository findAll 주석 제거)
   findAll = async (findInfo) => {
     const { page, location_id, user_id } = findInfo;
     const limit = 10;

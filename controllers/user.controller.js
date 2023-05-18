@@ -1,6 +1,9 @@
+const redis = require('redis');
 const UserService = require('../services/user.service');
-const AppError = require('../utils/appError');
-const redisClient = require('../repositories/redis.repository');
+const RedisClientRepository = require('../repositories/redis.repository.js');
+const redisClient = new RedisClientRepository(redis);
+// const { Op } = require('sequelize');
+// const { Items } = require('../models');
 
 class UserController {
   userService = new UserService();
@@ -41,30 +44,41 @@ class UserController {
     }
   };
 
-  // 이메일 인증
+  // 이메일 발송
   userMail = async (req, res, next) => {
     try {
       const { email } = req.body;
       let userNum = Math.random().toString().substring(2, 8);
       await this.userService.senduserMail(email, userNum);
+
+      const EXPIRE_TIME = 600;
+      await redisClient.setData(email, userNum, EXPIRE_TIME); // 10분 동안 유효
+
       res.status(200).json({ userNum: userNum });
     } catch (error) {
-      throw new AppError(400, '알수없는 이유로 오류가 발생하였습니다.');
+      console.error(error);
+      return res
+        .status(400)
+        .json({ Message: '알수없는 이유로 오류가 발생하였습니다.' });
+    }
+  };
+
+  // 이메일 인증 확인
+  mailverify = async (req, res, next) => {
+    const { email, userCode } = req.body;
+    const redisGetNum = await redisClient.getData(email);
+    if (userCode !== redisGetNum) {
+      return res.status(400).json({
+        errorMessage: '인증코드가 일치하지 않습니다. 다시 시도해주세요.',
+      });
+    } else {
+      return res.status(200).json({ Message: '인증코드가 일치하였습니다.' });
     }
   };
 
   // 회원 가입
   signup = async (req, res) => {
-    const { email, nickname, password, location_id, user_image, userCode } =
-      req.body;
-    const redisGetNum = await redisClient.get(email);
-
-    // 이메일 인증
-    if (userCode !== redisGetNum) {
-      return res.status(400).json({
-        errorMessage: '인증코드가 일치하지 않습니다. 다시 시도해주세요.',
-      });
-    }
+    const { email, nickname, password, location_id, user_image } = req.body;
 
     // input data 유효성 검사
     if (!email || !nickname || !password) {
@@ -230,6 +244,28 @@ class UserController {
       return res.status(200).end();
     }
   };
+
+  // 내 판매내역 조회
+  //   selllist = async (findInfo) => {
+  //     const { item_id, user_id } = findInfo;
+  //     const items = await this.itemsModel.findAll({
+  //       order: [['item_id', 'DESC']],
+  //       include: [
+  //         {
+  //           model: Likes,
+  //           attributes: [],
+  //           where: { user_id },
+  //           required: false,
+  //         },
+  //       ],
+  //       where: {
+  //         user_id,
+  //         status: { [Op.ne]: 'D' },
+  //         item_id: { [Op.ne]: item_id },
+  //       },
+  //     });
+  //     return items;
+  //   };
 }
 
 module.exports = UserController;

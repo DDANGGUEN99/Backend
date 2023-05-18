@@ -17,4 +17,7 @@ router.put('/', authMiddleware, userController.editProfile);
 // // 회원탈퇴
 router.delete('/', authMiddleware, userController.withdrawal);
 
+// 판매내역 조회
+router.get('/selllist', authMiddleware, userController.selllist);
+
 module.exports = router;
